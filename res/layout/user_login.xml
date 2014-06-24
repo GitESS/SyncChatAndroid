@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+ 
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/username_edittxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/view_center"
+        android:layout_alignLeft="@+id/password_edittxt"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:hint="Username" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/password_edittxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/tv_password"
+        android:ems="10"
+        android:hint="password"
+        android:inputType="textPassword" />
+
+    <View
+        android:id="@+id/view_center"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <Button
+        android:id="@+id/btn_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Sign in" />
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/username_edittxt"
+        android:layout_alignBottom="@+id/username_edittxt"
+        android:layout_alignParentLeft="true"
+        android:text="Username"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/password_edittxt"
+        android:layout_alignBottom="@+id/password_edittxt"
+        android:layout_alignRight="@+id/tv_username"
+        android:text="Password"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+
+</RelativeLayout>

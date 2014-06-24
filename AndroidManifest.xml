@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="hsb.ess.chat"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Holo" >
+        <service android:name="hsb.ess.chat.services.XmppConnectionService" />
+
+        <provider
+            android:name="hsb.ess.chat.services.ImageProvider"
+            android:authorities="eu.siacs.conversations.images"
+            android:exported="true" />
+
+        <service android:name="hsb.ess.chat.sync.AppLinkService" >
+        </service>
+
+        <receiver android:name="hsb.ess.chat.sync.AppLinkReceiver" >
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="hsb.ess.chat.services.EventReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="hsb.ess.chat.ui.ConversationActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_conversations"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.UserAuthicationActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_conversations"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.sync.LockScreenActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_conversations"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="hsb.ess.chat.ui.ConversationActivity" >
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.ManageAccountActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_manage_accounts"
+            android:launchMode="singleInstance"
+            android:parentActivityName="hsb.ess.chat.ui.ConversationActivity" >
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.MucDetailsActivity"
+            android:label="@string/title_activity_conference_details"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.ContactDetailsActivity"
+            android:label="@string/title_activity_contact_details"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.ContactsActivity"
+            android:label="@string/title_activity_contacts"
+            android:launchMode="singleInstance"
+            android:parentActivityName="hsb.ess.chat.ui.ConversationActivity"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.gultsch.chat.ui.ConversationActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="imto" />
+                <data android:host="jabber" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="hsb.ess.chat.ui.ShareWithActivity"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/title_activity_conversations"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Holo.Light.DialogWhenLarge" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
