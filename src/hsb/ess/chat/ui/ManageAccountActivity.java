@@ -58,7 +58,9 @@ public class ManageAccountActivity extends XmppActivity {
 	protected boolean firstrun = true;
 	protected String FromServerice = "";
 	protected List<Account> accountList = new ArrayList<Account>();
+	public static Account accountForSyncOnline;
 	protected ListView accountListView;
+
 	protected ArrayAdapter<Account> accountListViewAdapter;
 	protected OnAccountListChangedListener accountChanged = new OnAccountListChangedListener() {
 
@@ -570,7 +572,9 @@ public class ManageAccountActivity extends XmppActivity {
 				});
 		if (!Utils.isMyServiceRunning(this, AppLinkService.class))
 			startSyncProxyService();
-
+		
+		if (accountList.size() > 0)
+			accountForSyncOnline = this.accountList.get(0);
 	}
 
 	@Override
@@ -758,6 +762,7 @@ public class ManageAccountActivity extends XmppActivity {
 			}
 		}
 	}
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -765,7 +770,8 @@ public class ManageAccountActivity extends XmppActivity {
 		Bundle bs = getIntent().getExtras();
 		Log.i("hemant", "Bundle onresume" + bs);
 		if (bs != null) {
-			Log.i("hemant", "onresume Bundle not null" + bs.getString("ServiceIntent"));
+			Log.i("hemant",
+					"onresume Bundle not null" + bs.getString("ServiceIntent"));
 			FromServerice = bs.getString("ServiceIntent");
 		}
 	}

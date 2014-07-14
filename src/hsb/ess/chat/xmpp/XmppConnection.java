@@ -1,6 +1,7 @@
 package hsb.ess.chat.xmpp;
 
 import hsb.ess.chat.entities.Account;
+import hsb.ess.chat.services.XmppConnectionService;
 import hsb.ess.chat.utils.CryptoHelper;
 import hsb.ess.chat.utils.DNSHelper;
 import hsb.ess.chat.utils.zlib.ZLibInputStream;
@@ -64,7 +65,7 @@ public class XmppConnection implements Runnable {
 
 	private WakeLock wakeLock;
 
-	private SecureRandom random = new SecureRandom();
+	private SecureRandom mRandom;
 
 	private Socket socket;
 	private XmlReader tagReader;
@@ -101,9 +102,10 @@ public class XmppConnection implements Runnable {
 	private OnTLSExceptionReceived tlsListener = null;
 	private OnBindListener bindListener = null;
 
-	public XmppConnection(Account account, PowerManager pm) {
+	public XmppConnection(Account account, XmppConnectionService service) {
+		this.mRandom = service.getRNG();
 		this.account = account;
-		this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+		this.wakeLock = service.getPowerManager().newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				account.getJid());
 		tagWriter = new TagWriter();
 	}
@@ -182,7 +184,7 @@ public class XmppConnection implements Runnable {
 		} catch (UnknownHostException e) {
 			this.changeStatus(Account.STATUS_SERVER_NOT_FOUND);
 			if (wakeLock.isHeld()) {
-				wakeLock.release();
+				try { wakeLock.release();} catch (RuntimeException re) {}
 			}
 			return;
 		} catch (IOException e) {
@@ -190,21 +192,21 @@ public class XmppConnection implements Runnable {
 				this.changeStatus(Account.STATUS_OFFLINE);
 			}
 			if (wakeLock.isHeld()) {
-				wakeLock.release();
+				try { wakeLock.release();} catch (RuntimeException re) {}
 			}
 			return;
 		} catch (NoSuchAlgorithmException e) {
 			this.changeStatus(Account.STATUS_OFFLINE);
 			Log.d(LOGTAG, "compression exception " + e.getMessage());
 			if (wakeLock.isHeld()) {
-				wakeLock.release();
+				try { wakeLock.release();} catch (RuntimeException re) {}
 			}
 			return;
 		} catch (XmlPullParserException e) {
 			this.changeStatus(Account.STATUS_OFFLINE);
 			Log.d(LOGTAG, "xml exception " + e.getMessage());
 			if (wakeLock.isHeld()) {
-				wakeLock.release();
+				try { wakeLock.release();} catch (RuntimeException re) {}
 			}
 			return;
 		}
@@ -249,7 +251,7 @@ public class XmppConnection implements Runnable {
 				response.setAttribute("xmlns",
 						"urn:ietf:params:xml:ns:xmpp-sasl");
 				response.setContent(CryptoHelper.saslDigestMd5(account,
-						challange));
+						challange,mRandom));
 				tagWriter.writeElement(response);
 			} else if (nextTag.isStart("enabled")) {
 				this.stanzasSent = 0;
@@ -275,7 +277,6 @@ public class XmppConnection implements Runnable {
 			} else if (nextTag.isStart("r")) {
 				tagReader.readElement(nextTag);
 				AckPacket ack = new AckPacket(this.stanzasReceived, smVersion);
-				// Log.d(LOGTAG,ack.toString());
 				tagWriter.writeStanzaAsync(ack);
 			} else if (nextTag.isStart("a")) {
 				Element ack = tagReader.readElement(nextTag);
@@ -284,7 +285,6 @@ public class XmppConnection implements Runnable {
 				if (serverSequence > this.stanzasSent) {
 					this.stanzasSent = serverSequence;
 				}
-				// Log.d(LOGTAG,"server ack"+ack.toString()+" ("+this.stanzasSent+")");
 			} else if (nextTag.isStart("failed")) {
 				tagReader.readElement(nextTag);
 				Log.d(LOGTAG, account.getJid() + ": resumption failed");
@@ -298,9 +298,6 @@ public class XmppConnection implements Runnable {
 				processMessage(nextTag);
 			} else if (nextTag.isStart("presence")) {
 				processPresence(nextTag);
-			} else {
-				Log.d(LOGTAG, "found unexpected tag: " + nextTag.getName()
-						+ " as child of " + currentTag.getName());
 			}
 			nextTag = tagReader.readTag();
 		}
@@ -773,7 +770,7 @@ public class XmppConnection implements Runnable {
 	}
 
 	private String nextRandomId() {
-		return new BigInteger(50, random).toString(32);
+		return new BigInteger(50, mRandom).toString(32);
 	}
 
 	public void sendIqPacket(IqPacket packet, OnIqPacketReceived callback) {
@@ -928,15 +925,24 @@ public class XmppConnection implements Runnable {
 		return disco.get(server).contains(feature);
 	}
 
-	public String findDiscoItemByFeature(String feature) {
+	public List<String> findDiscoItemsByFeature(String feature) {
+		List<String> items = new ArrayList<String>();
 		Iterator<Entry<String, List<String>>> it = this.disco.entrySet()
 				.iterator();
 		while (it.hasNext()) {
 			Entry<String, List<String>> pairs = it.next();
-			if (pairs.getValue().contains(feature)&&pairs.getValue().size()==1) {
-				return pairs.getKey();
+			if (pairs.getValue().contains(feature)) {
+				items.add(pairs.getKey());
 			}
 			it.remove();
+		}
+		return items;
+	}
+
+	public String findDiscoItemByFeature(String feature) {
+		List<String> items = findDiscoItemsByFeature(feature);
+		if (items.size()>=1) {
+			return items.get(0);
 		}
 		return null;
 	}

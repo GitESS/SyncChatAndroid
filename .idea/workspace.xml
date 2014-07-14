@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ef600102-c753-47e8-b01f-4acdc2e94995" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.settings/org.eclipse.core.resources.prefs" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\SyncChat.apk" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\classes\hsb\ess\chat\ui\ContactsActivity$14.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\dexedLibs\AppLinkLibraryAndroid-2-1-1-aba1d5e075ac6616b7573910164937a6.jar" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\dexedLibs\android-support-v4-7539da8a19b046246fb761786f227061.jar" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\dexedLibs\bcprov-jdk15on-150-fffb7be354658f4a8234b19f6eb0f5ad.jar" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\dexedLibs\otr4j-0.10-ded87c9d6d94d45fa6401c1f0813bfd2.jar" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Hemant Android\Backup\d\workspaceSyncMusic\SyncChatDev\bin\jarlist.cache" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/AppLinkReceiver.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/AppLinkReceiver.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/AppLinkService$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/AppLinkService$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/AppLinkService.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/AppLinkService.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactDetailsActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactDetailsActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$1$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$1$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$10.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$10.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$11.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$11.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$12.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$12.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$13.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$13.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$2.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$3.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$4.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$8.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$8.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$9.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity$9.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ContactsActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/entities/Conversation.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/entities/Conversation.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$1$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$1$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$10.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$10.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$11.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$11.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$12.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$12.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$13.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$13.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$2.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$3.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$4.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$8.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$8.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$9.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$9.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$AsyncDrawable.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$AsyncDrawable.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$BitmapWorkerTask.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity$BitmapWorkerTask.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$10.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$10.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$11.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$11.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$12.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$12.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$8.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$8.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$9.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$9.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$BitmapCache.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$BitmapCache.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$ViewHolder.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment$ViewHolder.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ConversationFragment.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/utils/CryptoHelper.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/utils/CryptoHelper.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/EditAccount$2.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/EditAccount$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/EditAccount.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/EditAccount.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/persistance/FileBackend$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/persistance/FileBackend$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/persistance/FileBackend$ImageCopyException.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/persistance/FileBackend$ImageCopyException.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/persistance/FileBackend.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/persistance/FileBackend.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$5$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$5$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$8.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$8.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$9.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection$9.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnection.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnectionManager$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnectionManager$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnectionManager.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/jingle/JingleConnectionManager.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/LockScreenActivity$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/LockScreenActivity$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/LockScreenActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/sync/LockScreenActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$1$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$1$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$2$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$2$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$2.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$3.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$4.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$5$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$5$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ManageAccountActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/entities/Message.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/entities/Message.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/MucDetailsActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/MucDetailsActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/com/dns/minidns/R$drawable.class" afterPath="$PROJECT_DIR$/bin/classes/com/dns/minidns/R$drawable.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$drawable.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$drawable.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/org/openintents/openpgp/R$drawable.class" afterPath="$PROJECT_DIR$/bin/classes/org/openintents/openpgp/R$drawable.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$id.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$id.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$layout.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$layout.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$menu.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$menu.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$string.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$string.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$style.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$style.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$xml.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/R$xml.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ShareWithActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/ShareWithActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/utils/UIHelper$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/utils/UIHelper$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/utils/UIHelper.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/utils/UIHelper.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/UserAuthicationActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/UserAuthicationActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/Utils.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/Utils.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$4.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$8.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity$8.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/ui/XmppActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$2$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$2$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$2.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$3.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$4.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/xmpp/XmppConnection.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$1.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$10.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$10.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$11.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$11.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$12.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$12.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$13.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$13.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$14.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$14.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$15.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$15.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$2.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$3.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$4.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$5.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$6.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$7.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$8.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$8.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$9.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$9.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$XmppConnectionBinder.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService$XmppConnectionBinder.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService.class" afterPath="$PROJECT_DIR$/bin/classes/hsb/ess/chat/services/XmppConnectionService.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/classes.dex" afterPath="$PROJECT_DIR$/bin/classes.dex" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_add.png" afterPath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_add.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_add.png" afterPath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_add.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_add.png" afterPath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_add.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-hdpi/ic_action_add.png" afterPath="$PROJECT_DIR$/res/drawable-hdpi/ic_action_add.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-mdpi/ic_action_add.png" afterPath="$PROJECT_DIR$/res/drawable-mdpi/ic_action_add.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-xhdpi/ic_action_add.png" afterPath="$PROJECT_DIR$/res/drawable-xhdpi/ic_action_add.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/dexedLibs/minidns-7bf9a086cf0a0ff2b84384d6cf4e7a38.jar" afterPath="$PROJECT_DIR$/bin/dexedLibs/minidns-7bf9a086cf0a0ff2b84384d6cf4e7a38.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/dexedLibs/openpgp-api-lib-master-0721590775de559995b0418703dd4528.jar" afterPath="$PROJECT_DIR$/bin/dexedLibs/openpgp-api-lib-master-0721590775de559995b0418703dd4528.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/resources.ap_" afterPath="$PROJECT_DIR$/bin/resources.ap_" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.project" afterPath="$PROJECT_DIR$/.project" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/AndroidManifest.xml" afterPath="$PROJECT_DIR$/bin/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/sync/AppLinkReceiver.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/sync/AppLinkReceiver.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/sync/AppLinkService.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/sync/AppLinkService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ContactsActivity.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ContactsActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/entities/Conversation.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/entities/Conversation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ConversationActivity.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ConversationActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ConversationFragment.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ConversationFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/utils/CryptoHelper.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/utils/CryptoHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/persistance/FileBackend.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/persistance/FileBackend.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/xmpp/jingle/JingleConnection.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/xmpp/jingle/JingleConnection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/xmpp/jingle/JingleConnectionManager.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/xmpp/jingle/JingleConnectionManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/sync/LockScreenActivity.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/sync/LockScreenActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ManageAccountActivity.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/ui/ManageAccountActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/entities/Message.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/entities/Message.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gen/com/dns/minidns/R.java" afterPath="$PROJECT_DIR$/gen/com/dns/minidns/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gen/hsb/ess/chat/R.java" afterPath="$PROJECT_DIR$/gen/hsb/ess/chat/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gen/org/openintents/openpgp/R.java" afterPath="$PROJECT_DIR$/gen/org/openintents/openpgp/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/R.txt" afterPath="$PROJECT_DIR$/bin/R.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/utils/UIHelper.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/utils/UIHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/ui/Utils.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/ui/Utils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/ui/XmppActivity.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/ui/XmppActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/xmpp/XmppConnection.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/xmpp/XmppConnection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hsb/ess/chat/services/XmppConnectionService.java" afterPath="$PROJECT_DIR$/src/hsb/ess/chat/services/XmppConnectionService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/activity_new_conversation.xml" afterPath="$PROJECT_DIR$/res/layout/activity_new_conversation.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/menu/newconversation.xml" afterPath="$PROJECT_DIR$/res/menu/newconversation.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.properties" afterPath="$PROJECT_DIR$/project.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/user_login.xml" afterPath="$PROJECT_DIR$/res/layout/user_login.xml" />
+    </list>
+    <ignored path="SyncChatDev.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="SyncChatDev" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.6219512" vertical-offset="0" max-vertical-offset="714">
+              <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SyncChatDev.iml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SyncChatDev.iml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-6.12" vertical-offset="0" max-vertical-offset="459">
+              <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="local.properties" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/local.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-7.48" vertical-offset="0" max-vertical-offset="289">
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="true" />
+    </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/local.properties" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-15" />
+    <option name="width" value="1382" />
+    <option name="height" value="744" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SyncChatDev" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SyncChatDev" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SyncChatDev" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="android.project.structure.last.selected" value="" />
+    <property name="android.project.structure.proportion" value="0.15" />
+    <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="android.dex.compiler" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="FullScreen" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <list size="0" />
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ef600102-c753-47e8-b01f-4acdc2e94995" name="Default" comment="" />
+      <created>1405057043932</created>
+      <updated>1405057043932</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-15" y="0" width="1382" height="744" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3295082" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2489019" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/SyncChatDev.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.12" vertical-offset="0" max-vertical-offset="459">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/local.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.48" vertical-offset="0" max-vertical-offset="289">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6219512" vertical-offset="0" max-vertical-offset="714">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+

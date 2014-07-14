@@ -1,71 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
- 
+    android:background="@drawable/bg_login"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/username_edittxt"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/view_center"
-        android:layout_alignLeft="@+id/password_edittxt"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:ems="10"
-        android:hint="Username" >
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center" >
 
-        <requestFocus />
-    </EditText>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sync_chat_logo" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/password_edittxt"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/view_center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_toRightOf="@+id/tv_password"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical" >
 
-    <View
-        android:id="@+id/view_center"
+        <EditText
+            android:id="@+id/username_edittxt"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/edit_box"
+            android:ems="10"
+            android:hint="Username"
+            android:paddingLeft="20dp"
+            android:shadowColor="#FCFCFC"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:textColor="#18C429" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/password_edittxt"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/edit_box"
+            android:ems="10"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:paddingLeft="20dp"
+            android:shadowColor="#FCFCFC"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:textColor="#18C429" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btn_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="Sign in" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/tv_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/username_edittxt"
-        android:layout_alignBottom="@+id/username_edittxt"
-        android:layout_alignParentLeft="true"
-        android:text="Username"
-        android:textColor="#ffffff"
-        android:textStyle="bold" />
+            <Button
+                android:id="@+id/btn_signin"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/button_signin"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="1"
+                android:text="Sign In"
+                android:textColor="#FFFFFF"
+                android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/tv_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/password_edittxt"
-        android:layout_alignBottom="@+id/password_edittxt"
-        android:layout_alignRight="@+id/tv_username"
-        android:text="Password"
-        android:textColor="#ffffff"
-        android:textStyle="bold" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/button_light"
+                android:shadowColor="#FFFFFF"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="1"
+                android:text="Not registered yet ?  Sign up now"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp" />
+        </RelativeLayout>
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

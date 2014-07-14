@@ -7,7 +7,6 @@ package hsb.ess.chat.sync;
 
 import hsb.ess.chat.ui.ConversationActivity;
 import hsb.ess.chat.ui.ManageAccountActivity;
-import hsb.ess.chat.ui.Utils;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;

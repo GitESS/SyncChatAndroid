@@ -3,10 +3,17 @@
     <item
         android:id="@+id/action_accounts"
         android:orderInCategory="90"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:title="@string/action_accounts"
 	/>
         
+<!--      <item -->
+<!--         android:id="@+id/action_create_group" -->
+<!--         android:orderInCategory="90" -->
+<!--         android:showAsAction="ifRoom" -->
+<!--         android:title="Create Group" -->
+<!--         android:icon="@drawable/ic_action_social_add_group" -->
+	/>
 <!--     <item -->
 <!--         android:id="@+id/action_settings" -->
 <!--         android:orderInCategory="100" -->

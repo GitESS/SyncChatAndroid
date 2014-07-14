@@ -82,8 +82,14 @@ public class TagWriter {
 		if (finshed) {
 			return this;
 		} else {
-			if (!asyncStanzaWriter.isAlive()) asyncStanzaWriter.start();
-			writeQueue.add(stanza);
+			try {
+				if (!asyncStanzaWriter.isAlive()) asyncStanzaWriter.start();
+				writeQueue.add(stanza);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			
 			return this;
 		}
 	}

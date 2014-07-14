@@ -31,7 +31,12 @@ public class LockScreenActivity extends Activity {
 		instance = this;
 		setContentView(R.layout.lockscreen);
 		_syncExitButton = (Button) findViewById(R.id.lockreset);
+		
+		if (ConversationActivity.getInstance() != null)
+			ConversationActivity.getInstance().finish();
 
+		if (ManageAccountActivity.getInstance() != null)
+			ManageAccountActivity.getInstance().finish();
 		_syncExitButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

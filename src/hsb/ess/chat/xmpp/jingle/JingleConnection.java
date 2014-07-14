@@ -221,6 +221,23 @@ public class JingleConnection {
 		
 	}
 	
+	void cancel() {
+		this.sendCancel();
+		this.disconnect();
+		if (this.message!=null) {
+			if (this.responder.equals(account.getFullJid())) {
+				this.mXmppConnectionService.markMessage(this.message, Message.STATUS_RECEPTION_FAILED);
+			} else {
+				if (this.status == STATUS_INITIATED) {
+					this.mXmppConnectionService.markMessage(this.message, Message.STATUS_SEND_REJECTED);
+				} else {
+					this.mXmppConnectionService.markMessage(this.message, Message.STATUS_SEND_FAILED);
+				}
+			}
+		}
+		this.status = STATUS_CANCELED;
+		this.mJingleConnectionManager.finishConnection(this);
+	}
 	public void init(Account account, JinglePacket packet) {
 		this.status = STATUS_INITIATED;
 		Conversation conversation = this.mXmppConnectionService.findOrCreateConversation(account, packet.getFrom().split("/")[0], false);

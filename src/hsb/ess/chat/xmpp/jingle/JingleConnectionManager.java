@@ -16,7 +16,6 @@ import java.util.List;
 
 import android.util.Log;
 
-
 public class JingleConnectionManager {
 
 	private XmppConnectionService xmppConnectionService;
@@ -34,18 +33,20 @@ public class JingleConnectionManager {
 	public void deliverPacket(Account account, JinglePacket packet) {
 		if (packet.isAction("session-initiate")) {
 			JingleConnection connection = new JingleConnection(this);
-			connection.init(account,packet);
+			connection.init(account, packet);
 			connections.add(connection);
 		} else {
 			for (JingleConnection connection : connections) {
-				if (connection.getAccountJid().equals(account.getFullJid()) && connection
-						.getSessionId().equals(packet.getSessionId()) && connection
-						.getCounterPart().equals(packet.getFrom())) {
+				if (connection.getAccountJid().equals(account.getFullJid())
+						&& connection.getSessionId().equals(
+								packet.getSessionId())
+						&& connection.getCounterPart().equals(packet.getFrom())) {
 					connection.deliverPacket(packet);
 					return;
 				}
 			}
-			account.getXmppConnection().sendIqPacket(packet.generateRespone(IqPacket.TYPE_ERROR), null);
+			account.getXmppConnection().sendIqPacket(
+					packet.generateRespone(IqPacket.TYPE_ERROR), null);
 		}
 	}
 
@@ -61,7 +62,7 @@ public class JingleConnectionManager {
 		this.connections.add(connection);
 		return connection;
 	}
-	
+
 	public void finishConnection(JingleConnection connection) {
 		this.connections.remove(connection);
 	}
@@ -91,12 +92,17 @@ public class JingleConnectionManager {
 										.findChild("streamhost",
 												"http://jabber.org/protocol/bytestreams");
 								if (streamhost != null) {
-									JingleCandidate candidate = new JingleCandidate(nextRandomId(),true);
-									candidate.setHost(streamhost.getAttribute("host"));
-									candidate.setPort(Integer.parseInt(streamhost.getAttribute("port")));
-									candidate.setType(JingleCandidate.TYPE_PROXY);
+									JingleCandidate candidate = new JingleCandidate(
+											nextRandomId(), true);
+									candidate.setHost(streamhost
+											.getAttribute("host"));
+									candidate.setPort(Integer
+											.parseInt(streamhost
+													.getAttribute("port")));
+									candidate
+											.setType(JingleCandidate.TYPE_PROXY);
 									candidate.setJid(proxy);
-									candidate.setPriority(655360+65535);
+									candidate.setPriority(655360 + 65535);
 									primaryCandidates.put(account.getJid(),
 											candidate);
 									listener.onPrimaryCandidateFound(true,
@@ -120,9 +126,10 @@ public class JingleConnectionManager {
 	public String nextRandomId() {
 		return new BigInteger(50, random).toString(32);
 	}
-	
+
 	public long getAutoAcceptFileSize() {
-		String config = this.xmppConnectionService.getPreferences().getString("auto_accept_file_size", "524288");
+		String config = this.xmppConnectionService.getPreferences().getString(
+				"auto_accept_file_size", "524288");
 		try {
 			return Long.parseLong(config);
 		} catch (NumberFormatException e) {
@@ -133,27 +140,38 @@ public class JingleConnectionManager {
 	public void deliverIbbPacket(Account account, IqPacket packet) {
 		String sid = null;
 		Element payload = null;
-		if (packet.hasChild("open","http://jabber.org/protocol/ibb")) {
-			payload = packet.findChild("open","http://jabber.org/protocol/ibb");
+		if (packet.hasChild("open", "http://jabber.org/protocol/ibb")) {
+			payload = packet
+					.findChild("open", "http://jabber.org/protocol/ibb");
 			sid = payload.getAttribute("sid");
-		} else if (packet.hasChild("data","http://jabber.org/protocol/ibb")) {
-			payload = packet.findChild("data","http://jabber.org/protocol/ibb");
+		} else if (packet.hasChild("data", "http://jabber.org/protocol/ibb")) {
+			payload = packet
+					.findChild("data", "http://jabber.org/protocol/ibb");
 			sid = payload.getAttribute("sid");
 		}
-		if (sid!=null) {
+		if (sid != null) {
 			for (JingleConnection connection : connections) {
 				if (connection.hasTransportId(sid)) {
 					JingleTransport transport = connection.getTransport();
 					if (transport instanceof JingleInbandTransport) {
 						JingleInbandTransport inbandTransport = (JingleInbandTransport) transport;
-						inbandTransport.deliverPayload(packet,payload);
+						inbandTransport.deliverPayload(packet, payload);
 						return;
 					}
 				}
 			}
-			Log.d("xmppService","couldnt deliver payload: "+payload.toString());
+			Log.d("xmppService",
+					"couldnt deliver payload: " + payload.toString());
 		} else {
-			Log.d("xmppService","no sid found in incomming ibb packet");
+			Log.d("xmppService", "no sid found in incomming ibb packet");
+		}
+	}
+
+	public void cancelInTransmission() {
+		for (JingleConnection connection : this.connections) {
+			if (connection.getStatus() == JingleConnection.STATUS_TRANSMITTING) {
+				connection.cancel();
+			}
 		}
 	}
 }

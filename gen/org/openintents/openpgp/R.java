@@ -8,8 +8,8 @@ package org.openintents.openpgp;
 
 public final class R {
 	public static final class drawable {
-		public static final int ic_action_cancel_launchersize = 0x7f02000a;
-		public static final int ic_action_cancel_launchersize_light = 0x7f02000b;
+		public static final int ic_action_cancel_launchersize = 0x7f02000e;
+		public static final int ic_action_cancel_launchersize_light = 0x7f02000f;
 	}
 	public static final class string {
 		public static final int openpgp_install_openkeychain_via = 0x7f050002;

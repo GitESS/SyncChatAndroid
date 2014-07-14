@@ -20,12 +20,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -126,8 +124,7 @@ public class UIHelper {
 	private static int getNameColor(String name) {
 		int holoColors[] = { 0xFF1da9da, 0xFFb368d9, 0xFF83b600, 0xFFffa713,
 				0xFFe92727 };
-		return holoColors[Math.abs(name.toLowerCase(Locale.getDefault())
-				.hashCode()) % holoColors.length];
+		return holoColors[(int) ((name.hashCode() & 0xffffffffl) % holoColors.length)];
 	}
 
 	private static void drawTile(Canvas canvas, String letter, int tileColor,
@@ -285,12 +282,9 @@ public class UIHelper {
 			mNotificationManager.cancel(1111);
 			return;
 		} else if (accountsWproblems.size() == 1) {
-
-			// mBuilder.setContentTitle(context.getString(R.string.problem_connecting_to_account));
-			// mBuilder.setContentText(accountsWproblems.get(0).getJid());
-			return;
+			mBuilder.setContentTitle("problem_connecting_to_account");
+			mBuilder.setContentText(accountsWproblems.get(0).getJid());
 		} else {
-
 			mBuilder.setContentTitle(context
 					.getString(R.string.problem_connecting_to_accounts));
 			mBuilder.setContentText(context.getString(R.string.touch_to_fix));
@@ -335,7 +329,7 @@ public class UIHelper {
 		boolean showNofifications = preferences.getBoolean("show_notification",
 				true);
 		boolean vibrate = preferences.getBoolean("vibrate_on_notification",
-				false);
+				true);
 		boolean alwaysNotify = preferences.getBoolean(
 				"notify_in_conversation_when_highlighted", false);
 
@@ -409,27 +403,26 @@ public class UIHelper {
 			mBuilder.setStyle(new NotificationCompat.BigTextStyle()
 					.bigText(bigText.toString()));
 
-			// if(SyncProxyALM)
+//			Log.i("notifiChat", "notification single" + lastLine + " sender"
+//					+ conversation.getName(useSubject));
+//			Log.i("sync",
+//					""
+//							+ AppLinkService.getInstance().isMyServiceRunning(
+//									AppLinkService.class));
+////			if (AppLinkService.getInstance().isMyServiceRunning(
+////					AppLinkService.class)) {
+////				try {
+////					AppLinkService.getInstance().SpeakOutNow(
+////							"New Message From"
+////									+ conversation.getName(useSubject) + ".  "
+////									+ lastLine);
+////				} catch (Exception e) {
+////					e.printStackTrace();
+////				}
+////			}
+//
+//			Log.i("notifiChat", "notification single");
 
-			Log.i("Notify", "notification single" + lastLine + " sender"
-					+ conversation.getName(useSubject));
-			Log.i("sync",
-					""
-							+ AppLinkService.getInstance().isMyServiceRunning(
-									AppLinkService.class));
-			if (AppLinkService.getInstance().isMyServiceRunning(
-					AppLinkService.class)) {
-				try {
-					AppLinkService.getInstance().SpeakOutNow(
-							"New Message From"
-									+ conversation.getName(useSubject) + ".  "
-									+ lastLine);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			Log.i("Notify", "notification single");
 		} else {
 			NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
 			style.setBigContentTitle(unread.size() + " "
@@ -453,28 +446,22 @@ public class UIHelper {
 			mBuilder.setContentText(names.toString());
 			mBuilder.setStyle(style);
 
-			// Log.i("Notify", "notification single" + lastLine + " sender"
-			// + conversation.getName(useSubject));
-			// Log.i("sync",
-			// ""
-			// + AppLinkService.getInstance().isMyServiceRunning(
-			// AppLinkService.class));
-			if (AppLinkService.getInstance().isMyServiceRunning(
-					AppLinkService.class)) {
-				try {
-					AppLinkService.getInstance().SpeakOutNow(
-							"New Messages From" + names.toString());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			Log.i("Notify", "notification multiple");
+//			if (AppLinkService.getInstance().isMyServiceRunning(
+//					AppLinkService.class)) {
+//				try {
+//					AppLinkService.getInstance().SpeakOutNow(
+//							"New Messages From" + names.toString());
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+			Log.i("notifiChat", "notification multiple");
 		}
 		if ((currentCon != null) && (notify)) {
 			targetUuid = currentCon.getUuid();
 		}
 		if (unread.size() != 0) {
-			mBuilder.setSmallIcon(R.drawable.notification);
+			mBuilder.setSmallIcon(R.drawable.ic_action_chat);
 			if (notify) {
 				if (vibrate) {
 					int dat = 70;
@@ -505,7 +492,7 @@ public class UIHelper {
 
 			mBuilder.setContentIntent(resultPendingIntent);
 			Notification notification = mBuilder.build();
-			// mNotificationManager.notify(2342, notification);
+		//	mNotificationManager.notify(2342, notification);
 		}
 	}
 
@@ -563,7 +550,7 @@ public class UIHelper {
 			public void onClick(DialogInterface dialog, int which) {
 				contact.addOtrFingerprint(conversation.getOtrFingerprint());
 				msg.setVisibility(View.GONE);
-				// activity.xmppConnectionService.updateContact(contact);
+				activity.xmppConnectionService.syncRosterToDisk(account);
 			}
 		});
 		builder.setView(view);
@@ -588,34 +575,4 @@ public class UIHelper {
 			return getContactPicture(account.getJid(), size, context, false);
 		}
 	}
-
-	public void letActivityFireACommand(String sender, String msg) {
-		// if(SyncProxyALM)
-
-		Log.i("sync",
-				""
-						+ AppLinkService.getInstance().isMyServiceRunning(
-								AppLinkService.class));
-		if (AppLinkService.getInstance().isMyServiceRunning(
-				AppLinkService.class)) {
-			try {
-				AppLinkService.getInstance().SpeakOutNow(
-						"New Message From" + sender + ".  " + msg);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-	// private boolean isMyServiceRunning(Class<?> serviceClass) {
-	// ActivityManager manager = (ActivityManager)
-	// .getSystemService(Context.ACTIVITY_SERVICE);
-	// for (RunningServiceInfo service : manager
-	// .getRunningServices(Integer.MAX_VALUE)) {
-	// if (serviceClass.getName().equals(service.service.getClassName())) {
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 }

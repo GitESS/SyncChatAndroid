@@ -4,30 +4,19 @@ import hsb.ess.chat.R;
 import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
-import hsb.ess.chat.entities.Presences;
-import hsb.ess.chat.entities.Roster;
-import hsb.ess.chat.sync.AppLinkService;
 import hsb.ess.chat.utils.CryptoHelper;
 import hsb.ess.chat.utils.UIHelper;
 import hsb.ess.chat.utils.Validator;
-import hsb.ess.chat.xml.Element;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-
-import com.ford.syncV4.proxy.SyncProxyALM;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -35,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract.Presence;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -52,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -63,8 +52,9 @@ public class ContactsActivity extends XmppActivity {
 	protected List<Contact> rosterContacts = new ArrayList<Contact>();
 	protected List<Contact> aggregatedContacts = new ArrayList<Contact>();
 	protected ListView contactsView;
+	protected Button createGroupButton;
 	protected ArrayAdapter<Contact> contactsAdapter;
-	protected List<Account> accountList = new ArrayList<Account>();
+
 	protected EditText search;
 	protected String searchString = "";
 	private TextView contactsHeader;
@@ -77,7 +67,6 @@ public class ContactsActivity extends XmppActivity {
 	private boolean isActionMode = false;
 	private boolean inviteIntent = false;
 	private ActionMode actionMode = null;
-
 	private AbsListView.MultiChoiceModeListener actionModeCallback = new AbsListView.MultiChoiceModeListener() {
 
 		@Override
@@ -135,7 +124,7 @@ public class ContactsActivity extends XmppActivity {
 				if (selectedContacts.size() == 1) {
 					startConversation(selectedContacts.get(0));
 				} else {
-					startConference();
+					// startConference();
 				}
 				break;
 			case R.id.action_contact_details:
@@ -223,6 +212,13 @@ public class ContactsActivity extends XmppActivity {
 				conversation = tmpConversation;
 				break;
 			}
+//			else if (!tmpConversation.getUuid().equals(
+//					getIntent().getStringExtra("uuid"))
+//					&& ConversationActivity.INVITE_STRING
+//							.equalsIgnoreCase("invite")) {
+//				conversation = tmpConversation;
+//			}
+
 		}
 		if (conversation != null) {
 			xmppConnectionService.inviteToConference(conversation,
@@ -231,7 +227,7 @@ public class ContactsActivity extends XmppActivity {
 		finish();
 	}
 
-	private void startConference() {
+	public void startConference(View v) {
 		if (accounts.size() > 1) {
 			getAccountChooser(new OnClickListener() {
 
@@ -257,9 +253,20 @@ public class ContactsActivity extends XmppActivity {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							String mucName = CryptoHelper.randomMucName();
+							String mucName = CryptoHelper
+									.randomMucName(xmppConnectionService
+											.getRNG());
 							String serverName = account.getXmppConnection()
 									.getMucServer();
+							if (serverName == null) {
+								List<String> servers = getMucServers();
+								if (servers.size() >= 1) {
+									serverName = servers.get(0);
+								} else {
+									displayErrorDialog(R.string.no_muc_server_found);
+									return;
+								}
+							}
 							String jid = mucName + "@" + serverName;
 							Conversation conversation = xmppConnectionService
 									.findOrCreateConversation(account, jid,
@@ -275,8 +282,10 @@ public class ContactsActivity extends XmppActivity {
 											.getDisplayName());
 								}
 							}
+							// xmppConnectionService.sendConversationSubject(
+							// conversation, subject.toString());
 							xmppConnectionService.sendConversationSubject(
-									conversation, subject.toString());
+									conversation, mucName);
 							xmppConnectionService.inviteToConference(
 									conversation, selectedContacts);
 							switchToConversation(conversation, null, false);
@@ -342,16 +351,52 @@ public class ContactsActivity extends XmppActivity {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(activity);
 		this.useSubject = preferences.getBoolean("use_subject_in_muc", true);
+		// Log.i("hemant", "invite intent recieved" + getIntent().getAction());
+		String inviteUser = "";
+		// if (getIntent().getExtras() != null)
+		// inviteUser = getIntent().getExtras().getString("Inviteuser");
+		//
 		inviteIntent = "invite".equals(getIntent().getAction());
 		if (inviteIntent) {
 			contactsHeader.setVisibility(View.GONE);
 			actionMode = contactsView.startActionMode(actionModeCallback);
+			createGroupButton.setVisibility(View.GONE);
 			search.setVisibility(View.GONE);
+			return;
 		}
+
+//		if (!inviteIntent
+//				&& ConversationActivity.INVITE_STRING
+//						.equalsIgnoreCase("invite")) {
+//			contactsHeader.setVisibility(View.GONE);
+//			actionMode = contactsView.startActionMode(actionModeCallback);
+//			createGroupButton.setVisibility(View.GONE);
+//			search.setVisibility(View.GONE);
+//			//ConversationActivity.INVITE_STRING = "";
+//		}
+		// else if (inviteUser.equals("invite")) {
+		// contactsHeader.setVisibility(View.GONE);
+		// actionMode = contactsView.startActionMode(actionModeCallback);
+		// createGroupButton.setVisibility(View.GONE);
+		// search.setVisibility(View.GONE);
+		// }
 	}
-	TextView tv_contactListing ; 
-	
-	
+
+	// @Override
+	// protected void onNewIntent(Intent intent) {
+	// // TODO Auto-generated method stub
+	// super.onNewIntent(intent);
+	// Log.i("hemant", "invite on new intent recieved"
+	// + getIntent().getAction());
+	// inviteIntent = "invite".equals(getIntent().getAction());
+	// if (inviteIntent) {
+	// contactsHeader.setVisibility(View.GONE);
+	// actionMode = contactsView.startActionMode(actionModeCallback);
+	// createGroupButton.setVisibility(View.GONE);
+	// search.setVisibility(View.GONE);
+	// }
+	// }
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -359,13 +404,8 @@ public class ContactsActivity extends XmppActivity {
 
 		setContentView(R.layout.activity_new_conversation);
 
-		
 		contactsHeader = (TextView) findViewById(R.id.contacts_header);
-
-		tv_contactListing = (TextView)findViewById(R.id.tv_contactList);
-		
-		
-		
+		createGroupButton = (Button) findViewById(R.id.button_conversation);
 		search = (EditText) findViewById(R.id.new_conversation_search);
 		search.addTextChangedListener(new TextWatcher() {
 
@@ -400,8 +440,7 @@ public class ContactsActivity extends XmppActivity {
 				if (view == null) {
 					view = (View) inflater.inflate(R.layout.contact, null);
 				}
-				ImageView chat_status = (ImageView) view
-						.findViewById(R.id.imchat_online);
+
 				((TextView) view.findViewById(R.id.contact_display_name))
 						.setText(getItem(position).getDisplayName());
 				TextView contactJid = (TextView) view
@@ -411,73 +450,6 @@ public class ContactsActivity extends XmppActivity {
 						.findViewById(R.id.contact_photo);
 				imageView.setImageBitmap(UIHelper.getContactPicture(contact,
 						48, this.getContext(), false));
-				// Conversation conversation = mucs.get(which);
-				Contact con = getItem(position);
-
-				int constat = con.getMostAvailableStatus();
-
-				if (constat == Presences.ONLINE) {
-					chat_status
-							.setBackgroundResource(R.drawable.ic_action_chat_online);
-				} else {
-					chat_status
-							.setBackgroundResource(R.drawable.ic_action_chat_offline);
-				}
-
-				// Log.d("hemant", "is online"
-				// +getItem(position).getAccount().getRoster().getAccount().getStatus());
-				//
-				// for(Roster entry : rosterContacts) {
-				// presence = roster.getPresence(entry.getUser());
-				//
-				// System.out.println(entry.getUser());
-				// System.out.println(presence.getType().name());
-				// System.out.println(presence.getStatus());
-				// }
-				// Presences p = getItem(position).getPresences();
-				//
-				// String stat = acc.getContent();
-
-				// Conversation con =
-				// Log.d("hemant", "is online " + stat);
-
-				// Presences p = getItem(position).getPresences();
-				//
-				// int i = p.getMostAvailableStatus();
-				//
-				// Log.d("hemant", "is online " + i);
-				//
-				// if (isOnline(getItem(position).getAccount())) {
-				// chat_status
-				// .setBackgroundResource(R.drawable.ic_action_chat_online);
-				//
-				// } else {
-				// chat_status
-				// .setBackgroundResource(R.drawable.ic_action_chat_offline);
-				//
-				// }
-
-				// if(getItem(position).getAccount())
-
-				// Presence availability = roster.getPresence(user);
-				// Mode userMode = availability.getMode();
-				//
-				// retrieveState_mode(availability.getMode(),availability.isAvailable());
-				//
-				// public static int retrieveState_mode(Mode userMode, boolean
-				// isOnline) {
-				// int userState = 0;
-				// /** 0 for offline, 1 for online, 2 for away,3 for busy*/
-				// if(userMode == Mode.dnd) {
-				// userState = 3;
-				// } else if (userMode == Mode.away || userMode == Mode.xa) {
-				// userState = 2;
-				// } else if (isOnline) {
-				// userState = 1;
-				// }
-				// return userState;
-				// / }
-
 				return view;
 			}
 		};
@@ -491,42 +463,13 @@ public class ContactsActivity extends XmppActivity {
 				if (!isActionMode) {
 					Contact clickedContact = aggregatedContacts.get(pos);
 					startConversation(clickedContact);
-
+					// startConference();
 				} else {
 					actionMode.invalidate();
 				}
 			}
 		});
 		contactsView.setOnItemLongClickListener(this.onLongClickListener);
-		try {
-			activity.xmppConnectionService.reconnectAccount(
-					this.accounts.get(0), true);
-		} catch (Exception e) {
-			// TODO: handle exceptiontch
-			e.printStackTrace();
-			// Log.i("Exception", ""+e.printStackTrace());
-		}
-
-		// Account accounts = accountList.get(0);
-		// if ((accounts.getStatus() == Account.STATUS_OFFLINE)
-		// || (accounts.getStatus() == Account.STATUS_TLS_ERROR)) {
-		// activity.xmppConnectionService.reconnectAccount(accounts, true);
-		// contactsAdapter.notifyDataSetChanged();
-		// }
-		if (!Utils.isMyServiceRunning(this, AppLinkService.class))
-			startSyncProxyService();
-		
-		if(aggregatedContacts.size()==0){
-//			tv_contactListing.setVisibility(View.VISIBLE);
-//			contactsView.setVisibility(View.GONE);
-//			tv_contactListing.setText("Please Go online from ManageAccount available at Menu");
-			Toast.makeText(ContactsActivity.this, "Please Go online from ManageAccount available at Menu", Toast.LENGTH_LONG).show();
-		
-		}else{
-//			tv_contactListing.setVisibility(View.GONE);
-//			contactsView.setVisibility(View.VISIBLE);
-		}
-		
 	}
 
 	public void startConversation(final Contact contact) {
@@ -591,15 +534,22 @@ public class ContactsActivity extends XmppActivity {
 		}
 	}
 
-	private boolean isMuc(Contact contact) {
+	private List<String> getMucServers() {
 		ArrayList<String> mucServers = new ArrayList<String>();
 		for (Account account : accounts) {
 			if (account.getXmppConnection() != null) {
-				mucServers.add(account.getXmppConnection().getMucServer());
+				String server = account.getXmppConnection().getMucServer();
+				if (server != null) {
+					mucServers.add(server);
+				}
 			}
 		}
+		return mucServers;
+	}
+
+	private boolean isMuc(Contact contact) {
 		String server = contact.getJid().split("@")[1];
-		return mucServers.contains(server);
+		return getMucServers().contains(server);
 	}
 
 	public void startConversation(Contact contact, Account account, boolean muc) {
@@ -614,8 +564,6 @@ public class ContactsActivity extends XmppActivity {
 
 	@Override
 	void onBackendConnected() {
-		// xmppConnectionService.setOnAccountListChangedListener(accountChanged);
-
 		this.accounts = xmppConnectionService.getAccounts();
 		if (Intent.ACTION_SENDTO.equals(getIntent().getAction())) {
 			getActionBar().setDisplayHomeAsUpEnabled(false);
@@ -707,73 +655,4 @@ public class ContactsActivity extends XmppActivity {
 		}
 	}
 
-	public void startSyncProxyService() {
-		boolean isSYNCpaired = false;
-		// Get the local Bluetooth adapter
-		BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-
-		// BT Adapter exists, is enabled, and there are paired devices with the
-		// name SYNC
-		// Ideally start service and start proxy if already connected to sync
-		// but, there is no way to tell if a device is currently connected (pre
-		// OS 4.0)
-
-		if (mBtAdapter != null) {
-			if ((mBtAdapter.isEnabled() && mBtAdapter.getBondedDevices()
-					.isEmpty() == false)) {
-				// Get a set of currently paired devices
-				Set<BluetoothDevice> pairedDevices = mBtAdapter
-						.getBondedDevices();
-
-				// Check if there is a paired device with the name "SYNC"
-				if (pairedDevices.size() > 0) {
-					for (BluetoothDevice device : pairedDevices) {
-						if (device.getName().toString().contains("SYNC")) {
-							isSYNCpaired = true;
-							break;
-						}
-					}
-				} else {
-					Log.i("TAG", "A No Paired devices with the name sync");
-				}
-
-				if (isSYNCpaired == true) {
-					if (AppLinkService.getInstance() == null) {
-						Intent startIntent = new Intent(this,
-								AppLinkService.class);
-						this.startService(startIntent);
-					} else {
-						// if the service is already running and proxy is up,
-						// set this as current UI activity
-						AppLinkService serviceInstance = AppLinkService
-								.getInstance();
-						// serviceInstance.setCurrentActivity(getActivity());
-
-						SyncProxyALM proxyInstance = serviceInstance.getProxy();
-						if (proxyInstance != null) {
-							serviceInstance.reset();
-						} else {
-							Log.i("TAG", "proxy is null");
-							serviceInstance.startProxy();
-						}
-						Log.i("TAG", " proxyAlive == true success");
-					}
-				}
-			}
-		}
-	}
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-//		if(aggregatedContacts.size()==0){
-//			tv_contactListing.setVisibility(View.VISIBLE);
-//			contactsView.setVisibility(View.GONE);
-//			tv_contactListing.setText("Please Go online from ManageAccount available at Menu");
-//		
-//		}else{
-//			tv_contactListing.setVisibility(View.GONE);
-//			contactsView.setVisibility(View.VISIBLE);
-//		}
-	}
 }

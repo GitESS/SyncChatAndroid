@@ -371,7 +371,7 @@ public class ConversationFragment extends Fragment {
 				viewHolder.messageBody.setVisibility(View.VISIBLE);
 				if (text != null) {
 					viewHolder.messageBody.setText(text.trim());
-					Log.i("hemant", "message recieved" + text);
+				//	Log.i("hemant", "message recieved" + text);
 				} else {
 					viewHolder.messageBody.setText("");
 				}
@@ -385,7 +385,7 @@ public class ConversationFragment extends Fragment {
 
 				if (text != null) {
 					viewHolder.messageBody.setText(text.trim());
-					Log.e("hemant", "Last message recieved" + text);
+				//	Log.e("hemant", "Last message recieved" + text);
 				}
 				letActivityFireACommand(sender, text);
 			}
@@ -608,19 +608,19 @@ public class ConversationFragment extends Fragment {
 
 						String name = item.getConversation()
 								.getName(useSubject);
-						Log.i("hemant", "message size " + messages
-								+ " lastpostion" + lastposition
-								+ " Message type" + item.getType()
-								+ " position is :" + position + " Name" + name
-								+ "status " + Message.STATUS_RECIEVED
-								+ " get status" + getItem(position).getStatus());
+//						Log.i("hemant", "message size " + messages
+//								+ " lastpostion" + lastposition
+//								+ " Message type" + item.getType()
+//								+ " position is :" + position + " Name" + name
+//								+ "status " + Message.STATUS_RECIEVED
+//								+ " get status" + getItem(position).getStatus());
 						// int type = getItemViewType(position);
 
 						if (getItem(position).getStatus() == Message.STATUS_RECIEVED) {
 
 							try {
 								if (messages == lastposition) {
-									Log.i("hemant", "message is same");
+								//	Log.i("hemant", "message is same");
 								} else {
 									if (item.getType() == 0
 											&& position == messages - 1)
@@ -795,7 +795,7 @@ public class ConversationFragment extends Fragment {
 						&& ((message.getStatus() == Message.STATUS_RECIEVED) || (message
 								.getStatus() == Message.STATUS_SEND))) {
 					decryptMessage(message);
-					Log.i("hemant", "New message" + message);
+				//	Log.i("hemant", "New message" + message);
 					break;
 				}
 			}
@@ -831,6 +831,7 @@ public class ConversationFragment extends Fragment {
 			if (!activity.shouldPaneBeOpen()) {
 				activity.xmppConnectionService.markRead(conversation);
 				// TODO update notifications
+				Log.i("notifiChat", "update notification fragment");
 				UIHelper.updateNotification(getActivity(),
 						activity.getConversationList(), null, false);
 				activity.updateConversationList();
@@ -848,6 +849,7 @@ public class ConversationFragment extends Fragment {
 
 	protected void updateStatusMessages() {
 		boolean addedStatusMsg = false;
+		Log.i("Conference", "Conference mode" +conversation.getMode());
 		if (conversation.getMode() == Conversation.MODE_SINGLE) {
 			for (int i = this.messageList.size() - 1; i >= 0; --i) {
 				if (addedStatusMsg) {
@@ -899,6 +901,14 @@ public class ConversationFragment extends Fragment {
 	}
 
 	protected void sendPlainTextMessage(Message message) {
+		ConversationActivity activity = (ConversationActivity) getActivity();
+		activity.xmppConnectionService.sendMessage(message);
+		messageSent();
+	}
+	
+	
+	
+	public void sendMessage(Message message){
 		ConversationActivity activity = (ConversationActivity) getActivity();
 		activity.xmppConnectionService.sendMessage(message);
 		messageSent();

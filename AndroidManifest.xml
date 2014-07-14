@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -49,6 +49,19 @@
             </intent-filter>
         </receiver>
 
+<!--           <activity -->
+<!--             android:name="hsb.ess.chat.ui.TestActivity" -->
+<!--             android:configChanges="orientation|screenSize" -->
+<!--             android:label="@string/title_activity_conversations" -->
+<!--             android:launchMode="singleTask" -->
+<!--             android:windowSoftInputMode="stateHidden" > -->
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.MAIN" /> -->
+
+<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
+<!--             </intent-filter> -->
+<!--         </activity> -->
+        
         <activity
             android:name="hsb.ess.chat.ui.ConversationActivity"
             android:configChanges="orientation|screenSize"
@@ -110,7 +123,7 @@
         <activity
             android:name="hsb.ess.chat.ui.ContactsActivity"
             android:label="@string/title_activity_contacts"
-            android:launchMode="singleInstance"
+           
             android:parentActivityName="hsb.ess.chat.ui.ConversationActivity"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
@@ -126,6 +139,22 @@
                 <data android:host="jabber" />
             </intent-filter>
         </activity>
+<!--          <activity -->
+<!--             android:name="eu.siacs.conversations.ui.ContactsActivity" -->
+<!--             android:label="@string/title_activity_contacts" -->
+<!--             android:parentActivityName="eu.siacs.conversations.ui.ConversationActivity" -->
+<!--             android:windowSoftInputMode="stateHidden" -->
+<!--             android:logo="@drawable/ic_activity"> -->
+<!--             <meta-data -->
+<!--                 android:name="android.support.PARENT_ACTIVITY" -->
+<!--                 android:value="de.gultsch.chat.ui.ConversationActivity" /> -->
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.SENDTO" /> -->
+<!--                 <category android:name="android.intent.category.DEFAULT" /> -->
+<!--                 <data android:scheme="imto" /> -->
+<!--                 <data android:host="jabber" /> -->
+<!--             </intent-filter> -->
+<!--         </activity> -->
         <activity
             android:name="hsb.ess.chat.ui.ShareWithActivity"
             android:icon="@drawable/ic_launcher"

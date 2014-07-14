@@ -5,6 +5,7 @@ import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.services.ImageProvider;
+import hsb.ess.chat.sync.LockScreenActivity;
 import hsb.ess.chat.utils.UIHelper;
 
 import java.io.FileNotFoundException;
@@ -58,6 +59,8 @@ public class ConversationActivity extends XmppActivity {
 	public static final String TEXT = "text";
 	public static final String PRESENCE = "eu.siacs.conversations.presence";
 
+	//public static String INVITE_STRING="";
+	
 	public static final int REQUEST_SEND_MESSAGE = 0x75441;
 	public static final int REQUEST_DECRYPT_PGP = 0x76783;
 	private static final int REQUEST_ATTACH_FILE_DIALOG = 0x48502;
@@ -147,9 +150,15 @@ public class ConversationActivity extends XmppActivity {
 		metrics = getResources().getDisplayMetrics();
 
 		super.onCreate(savedInstanceState);
-this.instance =this;
+		this.instance = this;
 		setContentView(R.layout.fragment_conversations_overview);
 
+		if(LockScreenActivity.getInstance()!=null){
+			Intent i = new Intent(this, LockScreenActivity.class);
+			startActivity(i);
+			
+		}
+		
 		listView = (ListView) findViewById(R.id.list);
 
 		this.listAdapter = new ArrayAdapter<Conversation>(this,
@@ -286,6 +295,7 @@ this.instance =this;
 					if (!getSelectedConversation().isRead()) {
 						xmppConnectionService
 								.markRead(getSelectedConversation());
+						Log.i("notifiChat", "update notification");
 						UIHelper.updateNotification(getApplicationContext(),
 								getConversationList(), null, false);
 						listView.invalidateViews();
@@ -525,14 +535,17 @@ this.instance =this;
 			break;
 		case R.id.action_invite:
 
-			Toast.makeText(ConversationActivity.this, "Invite ",
-					Toast.LENGTH_SHORT).show();
-			// Intent inviteIntent = new Intent(getApplicationContext(),
-			// ContactsActivity.class);
-			// inviteIntent.setAction("invite");
-			// inviteIntent.putExtra("uuid",
-			// getSelectedConversation().getUuid());
-			// startActivity(inviteIntent);
+			// Toast.makeText(ConversationActivity.this, "Invite ",
+			// Toast.LENGTH_SHORT).show();
+			Intent inviteIntent = new Intent(getApplicationContext(),
+					ContactsActivity.class);
+			inviteIntent.setAction("invite");
+			//INVITE_STRING ="invite";
+			inviteIntent.putExtra("uuid", getSelectedConversation().getUuid());
+		//	inviteIntent.putExtra("Inviteuser", "invite");
+		//	inviteIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(inviteIntent);
+			Log.i("hemant", "action Invite action  " + inviteIntent.getAction() + "uuid "+getSelectedConversation().getUuid());
 			break;
 		// case R.id.action_security:
 		// final Conversation conversation = getSelectedConversation();
@@ -660,7 +673,12 @@ this.instance =this;
 				.beginTransaction();
 		transaction.replace(R.id.selected_conversation, selectedFragment,
 				"conversation");
-		transaction.commit();
+		try {
+			transaction.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return selectedFragment;
 	}
 

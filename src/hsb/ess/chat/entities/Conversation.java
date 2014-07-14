@@ -6,7 +6,6 @@ import java.security.interfaces.DSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import net.java.otr4j.OtrException;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
 import net.java.otr4j.crypto.OtrCryptoException;
@@ -62,6 +61,10 @@ public class Conversation extends AbstractEntity {
 	private transient MucOptions mucOptions = null;
 
 	private transient String latestMarkableMessageId;
+
+	private byte[] symmetricKey;
+
+	private boolean otrSessionNeedsStarting = false;
 
 	public Conversation(String name, Account account, String contactJid,
 			int mode) {
@@ -236,7 +239,10 @@ public class Conversation extends AbstractEntity {
 			try {
 				if (sendStart) {
 					this.otrSession.startSession();
+					this.otrSessionNeedsStarting = false;
 					return this.otrSession;
+				} else {
+					this.otrSessionNeedsStarting = true;
 				}
 				return this.otrSession;
 			} catch (OtrException e) {
@@ -251,7 +257,19 @@ public class Conversation extends AbstractEntity {
 	}
 
 	public void resetOtrSession() {
+		this.otrFingerprint = null;
+		this.otrSessionNeedsStarting = false;
 		this.otrSession = null;
+	}
+
+	public void startOtrIfNeeded() {
+		if (this.otrSession != null && this.otrSessionNeedsStarting) {
+			try {
+				this.otrSession.startSession();
+			} catch (OtrException e) {
+				this.resetOtrSession();
+			}
+		}
 	}
 
 	public void endOtrIfNeeded() {
@@ -353,5 +371,13 @@ public class Conversation extends AbstractEntity {
 		if (id != null) {
 			this.latestMarkableMessageId = id;
 		}
+	}
+
+	public void setSymmetricKey(byte[] key) {
+		this.symmetricKey = key;
+	}
+
+	public byte[] getSymmetricKey() {
+		return this.symmetricKey;
 	}
 }
