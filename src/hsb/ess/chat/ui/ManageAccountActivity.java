@@ -222,7 +222,12 @@ public class ManageAccountActivity extends XmppActivity {
 							.setText(getString(R.string.account_status_offline));
 					statusView.setTextColor(0xFFe92727);
 					setMyAccountIsOnline(false);
-					LockScreenActivity.getInstance().finish();
+					try {
+						LockScreenActivity.getInstance().finish();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
 					break;
 				case Account.STATUS_UNAUTHORIZED:
 					statusView
@@ -572,7 +577,7 @@ public class ManageAccountActivity extends XmppActivity {
 				});
 		if (!Utils.isMyServiceRunning(this, AppLinkService.class))
 			startSyncProxyService();
-		
+
 		if (accountList.size() > 0)
 			accountForSyncOnline = this.accountList.get(0);
 	}

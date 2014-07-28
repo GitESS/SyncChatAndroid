@@ -1,19 +1,14 @@
 package hsb.ess.chat.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Vector;
-
-import com.ford.syncV4.proxy.rpc.Choice;
-
 import hsb.ess.chat.R;
 import hsb.ess.chat.entities.Account;
-import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.services.XmppConnectionService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
 public class TestActivity extends Activity {
 	public XmppConnectionService xmppConnectionService;

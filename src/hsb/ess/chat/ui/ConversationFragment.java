@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.java.otr4j.session.SessionStatus;
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -99,7 +96,9 @@ public class ConversationFragment extends Fragment {
 			} else {
 				sendPlainTextMessage(message);
 			}
+			Log.i("Conversation", "Conversation contactJid"+conversation.getContactJid() +"Full JID " +conversation.getAccount().getFullJid());
 		}
+	
 	};
 	protected OnClickListener clickToDecryptListener = new OnClickListener() {
 

@@ -4,6 +4,7 @@ import hsb.ess.chat.R;
 import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
+import hsb.ess.chat.services.XmppConnectionService;
 import hsb.ess.chat.utils.CryptoHelper;
 import hsb.ess.chat.utils.UIHelper;
 import hsb.ess.chat.utils.Validator;
@@ -13,10 +14,13 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -67,6 +71,17 @@ public class ContactsActivity extends XmppActivity {
 	private boolean isActionMode = false;
 	private boolean inviteIntent = false;
 	private ActionMode actionMode = null;
+
+	public String MucName;
+
+	public String getMucName() {
+		return MucName;
+	}
+
+	public void setMucName(String mucName) {
+		MucName = mucName;
+	}
+
 	private AbsListView.MultiChoiceModeListener actionModeCallback = new AbsListView.MultiChoiceModeListener() {
 
 		@Override
@@ -212,12 +227,12 @@ public class ContactsActivity extends XmppActivity {
 				conversation = tmpConversation;
 				break;
 			}
-//			else if (!tmpConversation.getUuid().equals(
-//					getIntent().getStringExtra("uuid"))
-//					&& ConversationActivity.INVITE_STRING
-//							.equalsIgnoreCase("invite")) {
-//				conversation = tmpConversation;
-//			}
+			// else if (!tmpConversation.getUuid().equals(
+			// getIntent().getStringExtra("uuid"))
+			// && ConversationActivity.INVITE_STRING
+			// .equalsIgnoreCase("invite")) {
+			// conversation = tmpConversation;
+			// }
 
 		}
 		if (conversation != null) {
@@ -244,55 +259,227 @@ public class ContactsActivity extends XmppActivity {
 
 	private void startConference(final Account account) {
 		if (isOnline(account)) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(getString(R.string.new_conference));
-			builder.setMessage(getString(R.string.new_conference_explained));
-			builder.setNegativeButton(getString(R.string.cancel), null);
-			builder.setPositiveButton(getString(R.string.create_invite),
-					new OnClickListener() {
+			final Dialog d = new Dialog(ContactsActivity.this);
+			d.setContentView(R.layout.dialog_new_group);
+			d.setTitle("Create Group");
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String mucName = CryptoHelper
-									.randomMucName(xmppConnectionService
-											.getRNG());
-							String serverName = account.getXmppConnection()
-									.getMucServer();
-							if (serverName == null) {
-								List<String> servers = getMucServers();
-								if (servers.size() >= 1) {
-									serverName = servers.get(0);
-								} else {
-									displayErrorDialog(R.string.no_muc_server_found);
-									return;
-								}
+			final EditText name = (EditText) d
+					.findViewById(R.id.edittext_group_name);
+			Button create = (Button) d.findViewById(R.id.button_ok);
+			Button cancel = (Button) d.findViewById(R.id.button_cancel);
+
+			cancel.setOnClickListener(new android.view.View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					d.dismiss();
+				}
+			});
+
+			create.setOnClickListener(new android.view.View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// nameOfGroup=
+
+					// String mucName = CryptoHelper
+					// .randomMucName(xmppConnectionService
+					// .getRNG());
+					if (name.getText().toString().length() > 0) {
+						String mucName = name.getText().toString();
+						String serverName = account.getXmppConnection()
+								.getMucServer();
+						if (serverName == null) {
+							List<String> servers = getMucServers();
+							if (servers.size() >= 1) {
+								serverName = servers.get(0);
+							} else {
+								displayErrorDialog(R.string.no_muc_server_found);
+								return;
 							}
-							String jid = mucName + "@" + serverName;
-							Conversation conversation = xmppConnectionService
-									.findOrCreateConversation(account, jid,
-											true);
-							StringBuilder subject = new StringBuilder();
-							subject.append(account.getUsername() + ", ");
-							for (int i = 0; i < selectedContacts.size(); ++i) {
-								if (i + 1 != selectedContacts.size()) {
-									subject.append(selectedContacts.get(i)
-											.getDisplayName() + ", ");
-								} else {
-									subject.append(selectedContacts.get(i)
-											.getDisplayName());
-								}
-							}
-							// xmppConnectionService.sendConversationSubject(
-							// conversation, subject.toString());
-							xmppConnectionService.sendConversationSubject(
-									conversation, mucName);
-							xmppConnectionService.inviteToConference(
-									conversation, selectedContacts);
-							switchToConversation(conversation, null, false);
 						}
-					});
-			builder.create().show();
+						String jid = mucName + "@" + serverName;
+						Conversation conversation = xmppConnectionService
+								.findOrCreateConversation(account, jid, true);
+						StringBuilder subject = new StringBuilder();
+						subject.append(account.getUsername() + ", ");
+						for (int i = 0; i < selectedContacts.size(); ++i) {
+							if (i + 1 != selectedContacts.size()) {
+								subject.append(selectedContacts.get(i)
+										.getDisplayName() + ", ");
+							} else {
+								subject.append(selectedContacts.get(i)
+										.getDisplayName());
+							}
+						}
+						// xmppConnectionService.sendConversationSubject(
+						// conversation, subject.toString());
+						xmppConnectionService.sendConversationSubject(
+								conversation, mucName);
+						xmppConnectionService.inviteToConference(conversation,
+								selectedContacts);
+						switchToConversation(conversation, null, false);
+
+					} else {
+						Toast.makeText(ContactsActivity.this,
+								"Please enter valid name", Toast.LENGTH_SHORT)
+								.show();
+						return;
+					}
+
+				}
+			});
+
+			// AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			// builder.setTitle(getString(R.string.new_conference));
+			// builder.setMessage(getString(R.string.new_conference_explained));
+			// builder.setNegativeButton(getString(R.string.cancel), null);
+			// builder.setPositiveButton(getString(R.string.create_invite),
+			// new OnClickListener() {
+			//
+			// @Override
+			// public void onClick(DialogInterface dialog, int which) {
+			// String mucName = CryptoHelper
+			// .randomMucName(xmppConnectionService
+			// .getRNG());
+			// String serverName = account.getXmppConnection()
+			// .getMucServer();
+			// if (serverName == null) {
+			// List<String> servers = getMucServers();
+			// if (servers.size() >= 1) {
+			// serverName = servers.get(0);
+			// } else {
+			// displayErrorDialog(R.string.no_muc_server_found);
+			// return;
+			// }
+			// }
+			// String jid = mucName + "@" + serverName;
+			// Conversation conversation = xmppConnectionService
+			// .findOrCreateConversation(account, jid,
+			// true);
+			// StringBuilder subject = new StringBuilder();
+			// subject.append(account.getUsername() + ", ");
+			// for (int i = 0; i < selectedContacts.size(); ++i) {
+			// if (i + 1 != selectedContacts.size()) {
+			// subject.append(selectedContacts.get(i)
+			// .getDisplayName() + ", ");
+			// } else {
+			// subject.append(selectedContacts.get(i)
+			// .getDisplayName());
+			// }
+			// }
+			// // xmppConnectionService.sendConversationSubject(
+			// // conversation, subject.toString());
+			// xmppConnectionService.sendConversationSubject(
+			// conversation, mucName);
+			// xmppConnectionService.inviteToConference(
+			// conversation, selectedContacts);
+			// switchToConversation(conversation, null, false);
+			// }
+			// });
+			// builder.create().show();
+			d.show();
 		}
+	}
+
+	private String randomStringGen() {
+		// class variable
+		final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
+
+		final java.util.Random rand = new java.util.Random();
+
+		// consider using a Map<String,Boolean> to say whether the identifier is
+		// being used or not
+		final Set<String> identifiers = new HashSet<String>();
+
+		StringBuilder builder = new StringBuilder();
+		while (builder.toString().length() == 0) {
+			int length = rand.nextInt(5) + 5;
+			for (int i = 0; i < length; i++)
+				builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
+			if (identifiers.contains(builder.toString())) {
+				builder = new StringBuilder();
+			}
+
+		}
+		return builder.toString();
+
+	}
+
+	/**
+	 * Will create a group from Service
+	 * */
+	public void startConferenceFromService(final Account account) {
+		Conversation conversation;
+		// if (isOnline(account)) {
+		// String mucName = CryptoHelper.randomMucName(xmppConnectionService
+		// .getRNG());
+		String mucName = randomStringGen();
+		String serverName = account.getXmppConnection().getMucServer();
+		if (serverName == null) {
+			List<String> servers = getMucServers();
+			if (servers.size() >= 1) {
+				serverName = servers.get(0);
+			} else {
+				displayErrorDialog(R.string.no_muc_server_found);
+				return;
+			}
+		}
+		String jid = mucName + "@" + serverName;
+		setMucName(jid);
+
+		Log.i("ContactAct", "Account" + account + " Jid" + jid);
+		if (xmppConnectionService != null) {
+			conversation = ContactsActivity.this.xmppConnectionService
+					.createNewConversation(account, jid, true);
+		} else {
+			xmppConnectionService = new XmppConnectionService();
+			conversation = ContactsActivity.this.xmppConnectionService
+					.createNewConversation(account, jid, true);
+		}
+		StringBuilder subject = new StringBuilder();
+		subject.append(account.getUsername() + ", ");
+		for (int i = 0; i < selectedContacts.size(); ++i) {
+			if (i + 1 != selectedContacts.size()) {
+				subject.append(selectedContacts.get(i).getDisplayName() + ", ");
+			} else {
+				subject.append(selectedContacts.get(i).getDisplayName());
+			}
+		}
+		xmppConnectionService.sendConversationSubject(conversation,
+				subject.toString());
+		// xmppConnectionService
+		// .sendConversationSubject(conversation, mucName);
+		/*
+		 * xmppConnectionService.inviteToConference(conversation,
+		 * selectedContacts);
+		 */
+		// switchToConversation(conversation, null, false);
+
+		// }
+
+	}
+
+	/**
+	 * Creates the Conversation
+	 * */
+	public Conversation createConversationGroup(Account account, String jid) {
+		Conversation con;
+		con = xmppConnectionService
+				.findOrCreateConversation(account, jid, true);
+		return con;
+	}
+
+	/**
+	 * Sends invitation to the selected Contact
+	 * 
+	 * */
+	public void inviteToGroupFromService(Account account,
+			Contact contacts , String contactName) {
+		xmppConnectionService.inviteToConferenceWithAccount(account, contacts, contactName);
+		
+//		List<Contact> contactselected = new ArrayList<Contact>();
+//		contactselected.add(contact);
+//		xmppConnectionService.inviteToConference(conversation, contactselected);
 	}
 
 	protected void updateAggregatedContacts() {
@@ -365,15 +552,15 @@ public class ContactsActivity extends XmppActivity {
 			return;
 		}
 
-//		if (!inviteIntent
-//				&& ConversationActivity.INVITE_STRING
-//						.equalsIgnoreCase("invite")) {
-//			contactsHeader.setVisibility(View.GONE);
-//			actionMode = contactsView.startActionMode(actionModeCallback);
-//			createGroupButton.setVisibility(View.GONE);
-//			search.setVisibility(View.GONE);
-//			//ConversationActivity.INVITE_STRING = "";
-//		}
+		// if (!inviteIntent
+		// && ConversationActivity.INVITE_STRING
+		// .equalsIgnoreCase("invite")) {
+		// contactsHeader.setVisibility(View.GONE);
+		// actionMode = contactsView.startActionMode(actionModeCallback);
+		// createGroupButton.setVisibility(View.GONE);
+		// search.setVisibility(View.GONE);
+		// //ConversationActivity.INVITE_STRING = "";
+		// }
 		// else if (inviteUser.equals("invite")) {
 		// contactsHeader.setVisibility(View.GONE);
 		// actionMode = contactsView.startActionMode(actionModeCallback);
@@ -655,4 +842,28 @@ public class ContactsActivity extends XmppActivity {
 		}
 	}
 
+	// private Dialog customDialog() {
+	// Dialog d = new Dialog(ContactsActivity.this);
+	// d.setContentView(R.layout.dialog_new_group);
+	// EditText name = (EditText) d.findViewById(R.id.edittext_group_name);
+	// Button create = (Button) d.findViewById(R.id.button_ok);
+	// Button cancel = (Button) d.findViewById(R.id.button_cancel);
+	//
+	// cancel.setOnClickListener(new android.view.View.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View v) {
+	//
+	// }
+	// });
+	//
+	//
+	// create.setOnClickListener(new android.view.View.OnClickListener()){
+	// @Override
+	// public void onClick(View v) {
+	// name.getText().toString();
+	// }
+	// });
+	// return d;
+	// }
 }

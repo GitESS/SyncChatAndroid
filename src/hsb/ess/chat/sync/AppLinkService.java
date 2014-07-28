@@ -9,6 +9,8 @@ import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
+import hsb.ess.chat.entities.Presences;
+import hsb.ess.chat.ui.ContactsActivity;
 import hsb.ess.chat.ui.ConversationActivity;
 import hsb.ess.chat.ui.ConversationFragment;
 import hsb.ess.chat.ui.ManageAccountActivity;
@@ -18,13 +20,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import org.w3c.dom.Text;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.ContactsContract.Presence;
 import android.util.Log;
 
 import com.ford.syncV4.exception.SyncException;
@@ -59,6 +65,7 @@ import com.ford.syncV4.proxy.rpc.OnHMIStatus;
 import com.ford.syncV4.proxy.rpc.OnLanguageChange;
 import com.ford.syncV4.proxy.rpc.OnPermissionsChange;
 import com.ford.syncV4.proxy.rpc.OnVehicleData;
+import com.ford.syncV4.proxy.rpc.PerformAudioPassThru;
 import com.ford.syncV4.proxy.rpc.PerformAudioPassThruResponse;
 import com.ford.syncV4.proxy.rpc.PerformInteraction;
 import com.ford.syncV4.proxy.rpc.PerformInteractionResponse;
@@ -72,16 +79,23 @@ import com.ford.syncV4.proxy.rpc.SetGlobalPropertiesResponse;
 import com.ford.syncV4.proxy.rpc.SetMediaClockTimerResponse;
 import com.ford.syncV4.proxy.rpc.ShowResponse;
 import com.ford.syncV4.proxy.rpc.SliderResponse;
+import com.ford.syncV4.proxy.rpc.SoftButton;
 import com.ford.syncV4.proxy.rpc.SpeakResponse;
 import com.ford.syncV4.proxy.rpc.SubscribeButtonResponse;
 import com.ford.syncV4.proxy.rpc.SubscribeVehicleDataResponse;
 import com.ford.syncV4.proxy.rpc.TTSChunk;
 import com.ford.syncV4.proxy.rpc.UnsubscribeButtonResponse;
 import com.ford.syncV4.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.ford.syncV4.proxy.rpc.enums.AudioType;
+import com.ford.syncV4.proxy.rpc.enums.BitsPerSample;
 import com.ford.syncV4.proxy.rpc.enums.ButtonName;
 import com.ford.syncV4.proxy.rpc.enums.DriverDistractionState;
 import com.ford.syncV4.proxy.rpc.enums.InteractionMode;
+import com.ford.syncV4.proxy.rpc.enums.Result;
+import com.ford.syncV4.proxy.rpc.enums.SamplingRate;
+import com.ford.syncV4.proxy.rpc.enums.SoftButtonType;
 import com.ford.syncV4.proxy.rpc.enums.SpeechCapabilities;
+import com.ford.syncV4.proxy.rpc.enums.SystemAction;
 import com.ford.syncV4.proxy.rpc.enums.TextAlignment;
 import com.ford.syncV4.util.DebugTool;
 
@@ -105,23 +119,52 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 	private boolean lockscreenUP = false;
 	ManageAccountActivity manageA;
 
-	private boolean isFriendIsClicked = false;
+	// variable that keeps track if Friend or Group is Clicked
+	// private boolean isFriendIsClicked = false;
+	private int VRCommandSelected = 0;
+	private static final int vrFriend = 0;
+	private static final int vrGroup = 1;
+	private static final int vrContact = 2;
 	Account account;
 
-	List<Contact> contactsList, groupsList;
-	private static final int CHOICE_APPLE = 2013;
-	private static final int CHOICE_PEAR = 2014;
-	private static final int CHOICE_PEACH = 2015;
+	// variable which keeps track of Conversation , If a conversation is already
+	// in place or not
+	private boolean isConversationSelected = false;
+
+	List<Contact> onlineContactsList, groupsList, contactslist;
 	private static final int CHOICE_FRIENDS = 2016;
 	private static final int ONLINE_FRIENDS_CMDID = 1001;
 
 	private List<Integer> ONLINE_FRIENDS_ID;
-	private static int CHOICE_FRIENDS_ID = 2004;
+	private static int CHOICE_ONLINE_FRIENDS_ID = 2004;
+
+	private static final int CHOICE_CONTACTS = 2018;
+	private List<Integer> CONTACTS_LIST;
+	private static int CHOICE_CONTACTS_ID = 4000;
 
 	private static final int CHOICE_GROUPS = 2017;
 	private static final int ONLINE_GROUPS_CMDID = 1002;
 	private List<Integer> ONLINE_GROUP_ID;
 	private static int CHOICE_GROUPS_ID = 5001;
+
+	// variables resposible for sending messages
+	private String conCONTACT_JID = "";
+	private Account conACOUNT_NAME = null;
+	private String conSENDER_NAME = "";
+	private int conCONVERSATION_MODE;
+
+	Handler mHandler, childHandler;
+	ContactsActivity contactActivity;
+
+	private Account finalaccount;
+
+	/*
+	 * 
+	 * SoftButton ids Main : - 106, 107 ,108, 109 For Group/ friend/ recieved
+	 * message - 111, 112 for Creating Group : - 130
+	 */
+
+	// private Recorder mRecorder;
 
 	public static AppLinkService getInstance() {
 		return instance;
@@ -144,6 +187,38 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		instance = this;
 	}
 
+	// private Handler mRecordingHandler = new Handler(new Handler.Callback() {
+	// public boolean handleMessage1(android.os.Message m) {
+	// switch (m.what) {
+	// case FLACRecorder.MSG_AMPLITUDES:
+	// FLACRecorder.Amplitudes amp = (FLACRecorder.Amplitudes) m.obj;
+	//
+	// break;
+	//
+	// case FLACRecorder.MSG_OK:
+	// // Ignore
+	// break;
+	//
+	// case Recorder.MSG_END_OF_RECORDING:
+	//
+	// break;
+	//
+	// default:
+	// mRecorder.stop();
+	// // mErrorCode = m.what;
+	// // showDialog(DIALOG_RECORDING_ERROR);
+	// break;
+	// }
+	//
+	// return true;
+	// }
+	//
+	// @Override
+	// public boolean handleMessage(android.os.Message arg0) {
+	// // TODO Auto-generated method stub
+	// return false;
+	// }
+	// });
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (intent != null) {
 			mBtAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -156,6 +231,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		if (ConversationFragment.getInstance() != null) {
 			setCurrentActivity(ConversationFragment.getInstance());
 		}
+		// mRecorder = new Recorder(this, mRecordingHandler);
 		manageA = new ManageAccountActivity();
 		return START_STICKY;
 	}
@@ -260,24 +336,29 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 					proxy.show("Welcome to ", "Sync Chat",
 							TextAlignment.CENTERED, autoIncCorrId++);
 					proxy.speak("Welcome to sync Chat", autoIncCorrId++);
+
 				} catch (SyncException e) {
 					DebugTool.logError("Failed to send Show", e);
 				}
 				// send addcommands
 				// subscribe to buttons
 				subButtons();
-
+				showSoftButtonsOnScreen();
 				initializeVoiceCommand();
 				performInterac();
+
+				createVRForContactList();
+				try {
+					proxy.show("Sync Chat", "Application",
+							TextAlignment.CENTERED, autoIncCorrId++);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+
 				if (ConversationFragment.getInstance() != null) {
 					setCurrentActivity(ConversationFragment.getInstance());
 				}
-
-				Log.i("SyncService",
-						"If online?" + manageA.isMyAccountIsOnline());
-
 				manageA.runOnUiThread(new Runnable() {
-
 					@Override
 					public void run() {
 						if (manageA.isMyAccountIsOnline()) {
@@ -298,19 +379,14 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 				});
 
 			} else {
-				try {
-					proxy.show("Sync Chat", "Application",
-							TextAlignment.CENTERED, autoIncCorrId++);
-				} catch (SyncException e) {
-					DebugTool.logError("Failed to send Show", e);
-				}
+				// try {
+				// // proxy.show("Sync Chat", "Application",
+				// // TextAlignment.CENTERED, autoIncCorrId++);
+				// } catch (SyncException e) {
+				// DebugTool.logError("Failed to send Show", e);
+				// }
 			}
 
-			Log.i("hemant",
-					"Conversation Screen is "
-							+ ConversationFragment.getInstance()
-							+ " Is my account is online? "
-							+ manageA.isMyAccountIsOnline());
 			if (ConversationFragment.getInstance() != null
 					&& manageA.isMyAccountIsOnline()) {
 				Intent i = new Intent(AppLinkService.this,
@@ -424,19 +500,20 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		switch (notification.getCmdID()) {
 		case ONLINE_FRIENDS_CMDID: // for Choice set
 			performInteraction();
-			isFriendIsClicked = true;
+			// isFriendIsClicked = true;
+			VRCommandSelected = vrFriend;
 			break;
 
 		case ONLINE_GROUPS_CMDID:
 			performInteractionGroup();
-			isFriendIsClicked = false;
+			// isFriendIsClicked = false;
+			VRCommandSelected = vrGroup;
 			break;
 
 		default:
 			break;
 
 		}
-		Log.i("ApplinkServer", "Is Friend Clicked"+isFriendIsClicked);
 		// }
 
 	}
@@ -483,9 +560,11 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 		Log.i("ApplinkService", "Response" + response);
 		Log.i("ApplinkService", "Response id" + response.getChoiceID());
-		Log.i("ApplinkServer", "Is Friend Clicked Response "+isFriendIsClicked);
-		if (isFriendIsClicked) {
-			for (int i = 0; i < contactsList.size(); i++) {
+		Log.i("ApplinkServer", "Is Friend Clicked Response "
+				+ VRCommandSelected);
+		if (VRCommandSelected == vrFriend) {
+
+			for (int i = 0; i < onlineContactsList.size(); i++) {
 				int ContactID = ONLINE_FRIENDS_ID.get(i);
 
 				if (response.getChoiceID() == ContactID) {
@@ -493,42 +572,95 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 							"In PerformInteractionResponse and clicked item is "
 									+ i);
 
-					Account con = contactsList.get(i).getAccount();
-					String name = contactsList.get(i).getDisplayName();
-					String contactJid = contactsList.get(i).getJid();
+					Account con = onlineContactsList.get(i).getAccount();
+					String name = onlineContactsList.get(i).getDisplayName();
+					String contactJid = onlineContactsList.get(i).getJid();
 
-					Conversation conver = new Conversation(name, con,
-							contactJid, Conversation.MODE_SINGLE);
+					conACOUNT_NAME = con;
+					conCONTACT_JID = contactJid;
+					conSENDER_NAME = name;
+					conCONVERSATION_MODE = Conversation.MODE_SINGLE;
 
-					// ConversationFragment.getInstance().sendMessage(
-					// new Message(conver, "Send From Sync",
-					// Message.ENCRYPTION_NONE));
-
-					ManageAccountActivity.getInstance().xmppConnectionService
-							.sendMessage(new Message(conver, "Send From Sync",
-									Message.ENCRYPTION_NONE));
+					showSoftButtonsForFriends();
+					try {
+						proxy.show("Friend", name, TextAlignment.CENTERED,
+								autoIncCorrId++);
+					} catch (SyncException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					// performInteraction();
 					return;
 				}
 			}
-		} else if (!isFriendIsClicked) {
-			for (int i = 0; i < groupsList.size(); i++) {
-				int ContactID = ONLINE_GROUP_ID.get(i);
+		} else if (VRCommandSelected == vrGroup) {
 
-				if (response.getChoiceID() == ContactID) {
-					Log.d("service", "In ononCommand and clicked item is " + i);
+			if (groupsList.size() > 0) {
+				for (int i = 0; i < groupsList.size(); i++) {
+					int ContactID = ONLINE_GROUP_ID.get(i);
 
-					Account con = groupsList.get(i).getAccount();
-					String name = groupsList.get(i).getDisplayName();
-					String contactJid = groupsList.get(i).getJid();
+					if (response.getChoiceID() == ContactID) {
+						Account con = groupsList.get(i).getAccount();
+						String name = groupsList.get(i).getDisplayName();
+						String contactJid = groupsList.get(i).getJid();
+						conACOUNT_NAME = con;
+						conCONTACT_JID = contactJid;
+						conSENDER_NAME = name;
+						conCONVERSATION_MODE = Conversation.MODE_MULTI;
 
-					Conversation conver = new Conversation(name, con,
-							contactJid, Conversation.MODE_MULTI);
-					ManageAccountActivity.getInstance().xmppConnectionService
-							.sendMessage(new Message(conver, "Send From Sync",
-									Message.ENCRYPTION_NONE));
+						showSoftButtonsForGroups();
+						try {
+							proxy.show("Group", name, TextAlignment.CENTERED,
+									autoIncCorrId++);
+						} catch (SyncException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						// Conversation conver = new Conversation(name, con,
+						// contactJid, Conversation.MODE_MULTI);
+						// ManageAccountActivity.getInstance().xmppConnectionService
+						// .sendMessage(new Message(conver, "Send From Sync",
+						// Message.ENCRYPTION_NONE));
+					}
 				}
 			}
+		} else if (VRCommandSelected == vrContact) {
+
+			if (contactActivity == null) {
+				ConversationActivity.getInstance().runOnUiThread(
+						new Runnable() {
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								contactActivity = new ContactsActivity();
+							}
+						});
+			}
+
+			for (int i = 0; i < contactslist.size(); i++) {
+				int ContactID = CONTACTS_LIST.get(i);
+
+				if (response.getChoiceID() == ContactID) {
+					final Account con = contactslist.get(i).getAccount();
+					final Contact tempContact = contactslist.get(i);
+					ConversationActivity.getInstance().runOnUiThread(
+							new Runnable() {
+								@Override
+								public void run() {
+									// Conversation conver = contactActivity
+									// .createConversationGroup(con,
+									// contactActivity
+									// .getMucName());
+									contactActivity.inviteToGroupFromService(
+											con, tempContact, "raj");
+
+								}
+
+							});
+				}
+			}
+
 		}
 		// switch (response.getChoiceID()) {
 		// case CHOICE_FRUIT:
@@ -551,9 +683,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		// break;
 		// }
 
-		
-		SetAlert("Message Sent", 3000,
-				"Message Sent");
+		// SetAlert("Message Sent", 3000, "Message Sent");
 	}
 
 	@Override
@@ -605,6 +735,128 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 	@Override
 	public void onOnButtonPress(OnButtonPress notification) {
 		// TODO Auto-generated method stub
+
+		switch (notification.getCustomButtonName()) {
+		case 106:
+			performInteraction();
+
+			// isFriendIsClicked = true;
+			VRCommandSelected = vrFriend;
+			break;
+		case 107:
+			performInteractionGroup();
+			VRCommandSelected = vrGroup;
+			// isFriendIsClicked = false;
+			break;
+
+		case 108:
+			Vector<TTSChunk> initChunks = TTSChunkFactory
+					.createSimpleTTSChunks("Speak To Record!");
+			try {
+				PerformAudioPassThru msg = new PerformAudioPassThru();
+				msg.setInitialPrompt(initChunks);
+				msg.setAudioPassThruDisplayText1("Sync Chat ");
+				msg.setAudioPassThruDisplayText2("Recording..");
+				// msg.setSamplingRate(samplingRate)
+				msg.setSamplingRate(SamplingRate._8KHZ);
+				msg.setMaxDuration(Integer.parseInt("10000"));
+				msg.setBitsPerSample(BitsPerSample._8_BIT);
+				msg.setAudioType(AudioType.PCM);
+				msg.setCorrelationID(autoIncCorrId++);
+				msg.setMuteAudio(false);
+				RecordingAudio.getInstance().latestPerformAudioPassThruMsg = msg;
+				RecordingAudio.getInstance().mySampleRate = 8000;
+				RecordingAudio.getInstance().myBitsPerSample = 8;
+				Log.i("PerformAudioPClass", msg.toString());
+				proxy.sendRPCRequest(msg);
+			} catch (SyncException e) {
+			}
+			break;
+
+		case 109:
+
+			ConversationActivity.getInstance().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					contactActivity = new ContactsActivity();
+					if (finalaccount != null && contactActivity != null)
+						contactActivity
+								.startConferenceFromService(finalaccount);
+
+				}
+
+			});
+			try {
+				softButtonAfterCreatingGroup();
+				proxy.show("Group Created", contactActivity.getMucName(),
+						TextAlignment.CENTERED, autoIncCorrId++);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+			break;
+		case 111:
+			if (conACOUNT_NAME != null) {
+				sendMessage(conSENDER_NAME, conACOUNT_NAME, conCONTACT_JID,
+						conCONVERSATION_MODE);
+			} else {
+				final List<Account> accountList = new ArrayList<Account>();
+//				ConversationActivity.getInstance().runOnUiThread(
+//						new Runnable() {
+//
+//							@Override
+//							public void run() {
+								// TODO Auto-generated method stub
+								accountList.addAll(ConversationActivity
+										.getInstance().xmppConnectionService
+										.getAccounts());
+
+								finalaccount = accountList.get(0);
+								sendMessage(conSENDER_NAME, finalaccount,
+										conCONTACT_JID, conCONVERSATION_MODE);
+					//		}
+					//	});
+
+			}
+			Log.i("Applink", "Sender Name" + conSENDER_NAME + "Account"
+					+ conACOUNT_NAME + "JID" + conCONTACT_JID + "Mode"
+					+ conCONVERSATION_MODE);
+
+			break;
+
+		case 112:
+			try {
+
+				showSoftButtonsOnScreen();
+				proxy.show("Sync Chat", "Application", TextAlignment.CENTERED,
+						autoIncCorrId++);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+			break;
+
+		case 121:
+			sendMessage(conSENDER_NAME, conACOUNT_NAME, conCONTACT_JID,
+					Conversation.MODE_MULTI);
+			// performInteraction();
+			break;
+
+		case 131:
+			performInteractionContact();
+			VRCommandSelected = vrContact;
+			break;
+		default:
+			break;
+		}
+		// if (notification.getCustomButtonName().equals(106)) {
+		//
+		// } else if (notification.getCustomButtonName().equals(107)) {
+		// ;
+		// } else if (notification.getCustomButtonName().equals(108)) {
+		//
+		// }
+
 	}
 
 	@Override
@@ -668,6 +920,33 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 	@Override
 	public void onPerformAudioPassThruResponse(
 			PerformAudioPassThruResponse response) {
+
+		// TODO Auto-generated method stub
+		// Log.i("PerformAudioPassThru", "-" + response);
+
+		final Result result = response.getResultCode();
+		ConversationActivity.getInstance().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				RecordingAudio.getInstance().performAudioPassThruResponse(
+						result);
+			}
+		});
+
+		// mHandler = new Handler(){
+		// public void handleMessage(Message msg) {
+		// // TextView tv = (TextView) findViewById(R.id.displayMessage);
+		// android.os.Message msg = childHandler.obtainMessage();
+		// // tv.setText(msg.obj.toString());
+		// msg.obj = tv.getText().toString();
+		//
+		//
+		// childHandler.sendMessage(msg);
+		// }
+		// };
+		// new LooperThread().start();
+		// mRecorder.start(fileName);
+
 		// TODO Auto-generated method stub
 
 	}
@@ -675,12 +954,29 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 	@Override
 	public void onEndAudioPassThruResponse(EndAudioPassThruResponse response) {
 		// TODO Auto-generated method stub
-
+		final ConversationActivity mainActivity = ConversationActivity
+				.getInstance();
+		final Result result = response.getResultCode();
+		mainActivity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				RecordingAudio.getInstance().endAudioPassThruResponse(result);
+			}
+		});
 	}
 
 	@Override
 	public void onOnAudioPassThru(OnAudioPassThru notification) {
 		// TODO Auto-generated method stub
+		// Log.i("OnAudioPassThruNotif", "-" + notification.toString());
+		final byte[] aptData = notification.getAPTData();
+		ConversationActivity.getInstance().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				RecordingAudio.getInstance().audioPassThru(aptData);
+			}
+
+		});
 
 	}
 
@@ -744,10 +1040,32 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 	}
 
-	public void SpeakOutNow(String message) {
+	public void SpeakOutNow(String message, String contact, String contactJid,
+			int mode) {
 
 		try {
 			proxy.speak(" " + message, autoIncCorrId++);
+			if (!isConversationSelected) {
+
+				showSoftButtonWhenNewMessageArrives();
+				conCONTACT_JID = contactJid;
+				conSENDER_NAME = contact;
+				conCONVERSATION_MODE = mode;
+				try {
+					if (mode == Conversation.MODE_SINGLE) {
+						proxy.show("Friend", contact, TextAlignment.CENTERED,
+								autoIncCorrId++);
+					} else {
+						proxy.show("Group", contact, TextAlignment.CENTERED,
+								autoIncCorrId++);
+					}
+
+				} catch (SyncException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 		} catch (SyncException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -849,44 +1167,50 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 		Vector<Choice> commands = new Vector<Choice>();
 		Vector<Choice> commands2 = new Vector<Choice>();
-
 		List<Contact> tempgroupList, tempcontactList, tempRosterContacts;
 		tempgroupList = new ArrayList<Contact>();
 		tempcontactList = new ArrayList<Contact>();
-
 		tempRosterContacts = new ArrayList<Contact>();
-		contactsList = new ArrayList<Contact>();
+		onlineContactsList = new ArrayList<Contact>();
 		groupsList = new ArrayList<Contact>();
 		List<Account> accountList = new ArrayList<Account>();
 		accountList
 				.addAll(ConversationActivity.getInstance().xmppConnectionService
 						.getAccounts());
+
+		finalaccount = accountList.get(0);
 		tempRosterContacts = accountList.get(0).getRoster().getContacts();
 
 		for (int i = 0; i < tempRosterContacts.size(); i++) {
 			if (tempRosterContacts.get(i).couldBeMuc()) {
 				tempgroupList.add(tempRosterContacts.get(i));
 			} else {
-				tempcontactList.add(tempRosterContacts.get(i));
+				Presences pre = tempRosterContacts.get(i).getPresences();
+				Log.i("applinkService",
+						"Presence" + pre.getMostAvailableStatus());
+				if (pre.getMostAvailableStatus() == Presences.ONLINE) {
+
+					tempcontactList.add(tempRosterContacts.get(i));
+				}
 			}
 			Log.i("Hemant", "ContactList :" + tempcontactList.size()
 					+ " groupList : " + tempgroupList.size());
 		}
 
-		contactsList.addAll(tempcontactList);
+		onlineContactsList.addAll(tempcontactList);
 		groupsList.addAll(tempgroupList);
 
-		if (contactsList.size() != 0) {
-			Log.i("service", "Contact List" + contactsList.size());
+		if (onlineContactsList.size() != 0) {
+			Log.i("service", "Contact List" + onlineContactsList.size());
 		}
 
 		ONLINE_FRIENDS_ID = new ArrayList<Integer>();
-		for (int i = 0; i < contactsList.size(); i++) {
-			ONLINE_FRIENDS_ID.add(CHOICE_FRIENDS_ID + i);
-			Contact name = contactsList.get(i);
+		for (int i = 0; i < onlineContactsList.size(); i++) {
+			ONLINE_FRIENDS_ID.add(CHOICE_ONLINE_FRIENDS_ID + i);
+			Contact name = onlineContactsList.get(i);
 			String contactName = name.getDisplayName();
 			Choice one = new Choice();
-			one.setChoiceID(CHOICE_FRIENDS_ID + i);
+			one.setChoiceID(CHOICE_ONLINE_FRIENDS_ID + i);
 			one.setMenuName(contactName);
 			one.setVrCommands(new Vector<String>(Arrays
 					.asList(new String[] { contactName })));
@@ -944,21 +1268,372 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 		}
 	}
-	public void SetAlert(String name, int time, String msg){
+
+	private void performInteractionContact() {
+
+		PerformInteraction msg = new PerformInteraction();
+		msg.setCorrelationID(autoIncCorrId++);
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(CHOICE_CONTACTS);
+		Vector<TTSChunk> initChunks = TTSChunkFactory
+				.createSimpleTTSChunks("Select a friend to add");
+		Vector<TTSChunk> helpChunks = TTSChunkFactory
+				.createSimpleTTSChunks("Please say the name of your Friend ");
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory
+				.createSimpleTTSChunks("you miss the chance to pick");
+		msg.setInitialPrompt(initChunks);
+		msg.setInitialText("Friend List : Please say the name of your friend");
+		msg.setInteractionChoiceSetIDList(interactionChoiceSetIDs);
+		msg.setInteractionMode(InteractionMode.BOTH);
+		msg.setTimeout(10000);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		try {
+			proxy.sendRPCRequest(msg);
+		} catch (SyncException e) {
+			Log.e(TAG, "Error sending message");
+		}
+
+	}
+
+	/**
+	 * Loads all the Contact list and stores on arraylist for VR Command
+	 * */
+	private void createVRForContactList() {
+		Vector<Choice> commands = new Vector<Choice>();
+		List<Contact> tempcontactList, tempRosterContacts;
+		tempcontactList = new ArrayList<Contact>();
+		tempRosterContacts = new ArrayList<Contact>();
+		contactslist = new ArrayList<Contact>();
+		// groupsList = new ArrayList<Contact>();
+		List<Account> accountList = new ArrayList<Account>();
+		accountList
+				.addAll(ConversationActivity.getInstance().xmppConnectionService
+						.getAccounts());
+
+		tempRosterContacts = accountList.get(0).getRoster().getContacts();
+		Log.i("ApplinkService", "Contacts" + tempRosterContacts.size());
+		for (int i = 0; i < tempRosterContacts.size(); i++) {
+			if (tempRosterContacts.get(i).couldBeMuc()) {
+			} else {
+				tempcontactList.add(tempRosterContacts.get(i));
+			}
+		}
+
+		contactslist.addAll(tempcontactList);// groupsList.addAll(tempgroupList);
+
+		if (contactslist.size() != 0) {
+			Log.i("service", "Contact List" + onlineContactsList.size());
+		}
+
+		CONTACTS_LIST = new ArrayList<Integer>();
+		for (int i = 0; i < contactslist.size(); i++) {
+			CONTACTS_LIST.add(CHOICE_CONTACTS_ID + i);
+			Contact name = contactslist.get(i);
+			String contactName = name.getDisplayName();
+			Choice one = new Choice();
+			one.setChoiceID(CHOICE_CONTACTS_ID + i);
+			one.setMenuName(contactName);
+			one.setVrCommands(new Vector<String>(Arrays
+					.asList(new String[] { contactName })));
+			one.setImage(null);
+			commands.add(one);
+
+		}
+
+		if (!commands.isEmpty()) {
+			Log.e(TAG, "send choice set to SYNC");
+			CreateInteractionChoiceSet msg2 = new CreateInteractionChoiceSet();
+			msg2.setCorrelationID(autoIncCorrId++);
+			int choiceSetID = CHOICE_CONTACTS;
+			msg2.setInteractionChoiceSetID(choiceSetID);
+			msg2.setChoiceSet(commands);
+			try {
+				proxy.sendRPCRequest(msg2);
+			} catch (SyncException e) {
+				Log.e(TAG, "Error sending message: ");
+			}
+		} else {
+
+		}
+
+	}
+
+	public void SetAlert(String name, int time, String msg) {
 		Alert alert = new Alert();
 		alert.setAlertText1(name);
 		alert.setDuration(time);
 		alert.setCorrelationID(autoIncCorrId++);
 		Vector<TTSChunk> ttsChunks = new Vector<TTSChunk>();
-		ttsChunks.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT,
-				msg));
+		ttsChunks
+				.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, msg));
 		alert.setTtsChunks(ttsChunks);
-	try{
+		try {
 			proxy.sendRPCRequest(alert);
-		
-	}catch(SyncException e){
-		
+
+		} catch (SyncException e) {
+
+		}
+
 	}
-	
+
+	private void showSoftButtonsOnScreen() {
+		isConversationSelected = false;
+		// Add Soft button name
+		ArrayList<String> SoftButtonName = new ArrayList<String>();
+		SoftButtonName.add("Friends");
+		SoftButtonName.add("Groups");
+		SoftButtonName.add("Record");
+		//SoftButtonName.add("Create Group");
+		// SoftButtonName.add("Vehicle");
+
+		// Add Soft buttonID
+		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
+		SoftButtonId.add(106);
+		SoftButtonId.add(107);
+		SoftButtonId.add(108);
+		//SoftButtonId.add(109);
+
+		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
+		SoftButton softButton;
+		try {
+			for (int i = 0; i < SoftButtonName.size(); i++) {
+				softButton = new SoftButton();
+				softButton.setText(SoftButtonName.get(i));
+				softButton.setSoftButtonID(SoftButtonId.get(i));
+				softButton.setType(SoftButtonType.SBT_TEXT);
+				softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+				vsoftButton.add(softButton);
+
+			}
+			// Send Show RPC:
+			proxy.show("", "", "", "", null, vsoftButton, null, null,
+					autoIncCorrId++);
+		} catch (SyncException e) {
+
+		}
+
+	}
+
+	/**
+	 * Will declares the Soft buttons when group is selected.
+	 * 
+	 * 
+	 * */
+	private void softButtonAfterCreatingGroup() {
+
+		isConversationSelected = false;
+		// Add Soft button name
+		ArrayList<String> SoftButtonName = new ArrayList<String>();
+		SoftButtonName.add("Add Friend");
+		SoftButtonName.add("Back");
+		// SoftButtonName.add("Vehicle");
+
+		// Add Soft buttonID
+		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
+		SoftButtonId.add(131);
+		SoftButtonId.add(112);
+
+		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
+		SoftButton softButton;
+		try {
+			for (int i = 0; i < SoftButtonName.size(); i++) {
+				softButton = new SoftButton();
+				softButton.setText(SoftButtonName.get(i));
+				softButton.setSoftButtonID(SoftButtonId.get(i));
+				softButton.setType(SoftButtonType.SBT_TEXT);
+				softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+				vsoftButton.add(softButton);
+
+			}
+			// Send Show RPC:
+			proxy.show("", "", "", "", null, vsoftButton, null, null,
+					autoIncCorrId++);
+		} catch (SyncException e) {
+
+		}
+
+	}
+
+	/**
+	 * Will be called when friends is clicked, Has options like Send and Back
+	 * friends softbutton ids = 111-120
+	 * */
+	private void showSoftButtonsForFriends() {
+
+		isConversationSelected = true;
+		// Add Soft button name
+		ArrayList<String> SoftButtonName = new ArrayList<String>();
+		SoftButtonName.add("Send");
+		SoftButtonName.add("Back");
+
+		// SoftButtonName.add("Vehicle");
+
+		// Add Soft buttonID
+		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
+		SoftButtonId.add(111);
+		SoftButtonId.add(112);
+
+		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
+		SoftButton softButton;
+		try {
+			for (int i = 0; i < SoftButtonName.size(); i++) {
+				softButton = new SoftButton();
+				softButton.setText(SoftButtonName.get(i));
+				softButton.setSoftButtonID(SoftButtonId.get(i));
+				softButton.setType(SoftButtonType.SBT_TEXT);
+				softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+				vsoftButton.add(softButton);
+
+			}
+			// Send Show RPC:
+			proxy.show("", "", "", "", null, vsoftButton, null, null,
+					autoIncCorrId++);
+		} catch (SyncException e) {
+
+		}
+
+	}
+
+	/**
+	 * Will be called when Groups is clicked, Has options like Send add friend
+	 * and Back Groups softbutton ids = 121-130
+	 * */
+	private void showSoftButtonWhenNewMessageArrives() {
+		ArrayList<String> SoftButtonName = new ArrayList<String>();
+		SoftButtonName.add("Reply");
+		SoftButtonName.add("Back");
+		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
+		SoftButtonId.add(111);
+		SoftButtonId.add(112);
+
+		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
+		SoftButton softButton;
+		try {
+			for (int i = 0; i < SoftButtonName.size(); i++) {
+				softButton = new SoftButton();
+				softButton.setText(SoftButtonName.get(i));
+				softButton.setSoftButtonID(SoftButtonId.get(i));
+				softButton.setType(SoftButtonType.SBT_TEXT);
+				softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+				vsoftButton.add(softButton);
+
+			}
+			// Send Show RPC:
+			proxy.show("", "", "", "", null, vsoftButton, null, null,
+					autoIncCorrId++);
+		} catch (SyncException e) {
+
+		}
+
+	}
+
+	/**
+	 * Will be called when Groups is clicked, Has options like Send add friend
+	 * and Back Groups softbutton ids = 121-130
+	 * */
+	private void showSoftButtonsForGroups() {
+
+		isConversationSelected = true;
+		// Add Soft button name
+		ArrayList<String> SoftButtonName = new ArrayList<String>();
+		SoftButtonName.add("Send");
+
+		SoftButtonName.add("Back");
+
+		// SoftButtonName.add("Vehicle");
+
+		// Add Soft buttonID
+		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
+		SoftButtonId.add(111);
+		SoftButtonId.add(112);
+
+		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
+		SoftButton softButton;
+		try {
+			for (int i = 0; i < SoftButtonName.size(); i++) {
+				softButton = new SoftButton();
+				softButton.setText(SoftButtonName.get(i));
+				softButton.setSoftButtonID(SoftButtonId.get(i));
+				softButton.setType(SoftButtonType.SBT_TEXT);
+				softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+				vsoftButton.add(softButton);
+
+			}
+			// Send Show RPC:
+			proxy.show("", "", "", "", null, vsoftButton, null, null,
+					autoIncCorrId++);
+		} catch (SyncException e) {
+
+		}
+
+	}
+
+	// private void sendMessageToFriend() {
+	//
+	// for (int i = 0; i < contactsList.size(); i++) {
+	// int ContactID = ONLINE_FRIENDS_ID.get(i);
+	//
+	// if (response.getChoiceID() == ContactID) {
+	// Log.d("service",
+	// "In PerformInteractionResponse and clicked item is "
+	// + i);
+	//
+	// Account con = contactsList.get(i).getAccount();
+	// String name = contactsList.get(i).getDisplayName();
+	// String contactJid = contactsList.get(i).getJid();
+	//
+	// Conversation conver = new Conversation(name, con, contactJid,
+	// Conversation.MODE_SINGLE);
+	//
+	// // ConversationFragment.getInstance().sendMessage(
+	// // new Message(conver, "Send From Sync",
+	// // Message.ENCRYPTION_NONE));
+	//
+	// ManageAccountActivity.getInstance().xmppConnectionService
+	// .sendMessage(new Message(conver, "Send From Sync",
+	// Message.ENCRYPTION_NONE));
+	// // performInteraction();
+	// return;
+	// }
+	// }
+	//
+	// }
+
+	/**
+	 * Sends Message to particular user
+	 * 
+	 * @param name
+	 *            : Name of the Reciever
+	 * @param account
+	 *            : Account name
+	 * @param contactJid
+	 *            : Jid of the reciever
+	 * */
+	private void sendMessage(String name, Account con, String contactJid,
+			int mode) {
+		Conversation conver = new Conversation(name, con, contactJid, mode);
+
+		// ConversationFragment.getInstance().sendMessage(
+		// new Message(conver, "Send From Sync",
+		// Message.ENCRYPTION_NONE));
+
+		ManageAccountActivity.getInstance().xmppConnectionService
+				.sendMessage(new Message(conver, "Send From Sync",
+						Message.ENCRYPTION_NONE));
+		try {
+			proxy.alert("Message Sent", "", false, 2000, autoIncCorrId++);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		try {
+			proxy.alert("Message Sent", false, autoIncCorrId++);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
 }
-}
+
+// class LooperThread extends Thread {}

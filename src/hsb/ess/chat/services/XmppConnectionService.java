@@ -187,7 +187,9 @@ public class XmppConnectionService extends Service {
 							Log.i("notifiChat", "message sent");
 							AppLinkService.getInstance().SpeakOutNow(
 									"New Message from" + contacts + ".  "
-											+ body);
+											+ body, contacts,
+									message.getConversation().getContactJid(),
+									Conversation.MODE_SINGLE);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -214,20 +216,24 @@ public class XmppConnectionService extends Service {
 					// conversationuuid.getContactJid();
 					// Contact contact = conversationuuid.getContact();
 					// = contact.getDisplayName();
-					if(body.equalsIgnoreCase("Send From Sync")){
-						
-					}else{
+					if (body.equalsIgnoreCase("Send From Sync")) {
+
+					} else {
 
 						try {
-							if (AppLinkService.getInstance().isMyServiceRunning(
-									AppLinkService.class)) {
+							if (AppLinkService.getInstance()
+									.isMyServiceRunning(AppLinkService.class)) {
 								try {
 									Log.i("notifiChat", "message sent");
-									
+
 									AppLinkService.getInstance().SpeakOutNow(
 											"New Message in group ." + contacts
 													+ ". from user" + contactc
-													+ ".  " + body);
+													+ ".  " + body,
+											contacts,
+											message.getConversation()
+													.getContactJid(),
+											Conversation.MODE_SINGLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -235,7 +241,7 @@ public class XmppConnectionService extends Service {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						
+
 					}
 
 				}
@@ -1035,6 +1041,24 @@ public class XmppConnectionService extends Service {
 		return conversation;
 	}
 
+	public Conversation createNewConversation(Account account, String jid,
+			boolean muc) {
+		Conversation conversation;
+		String conversationName;
+		Contact contact = account.getRoster().getContact(jid);
+		if (contact != null) {
+			conversationName = contact.getDisplayName();
+		} else {
+			conversationName = jid.split("@")[0];
+		}
+
+		conversation = new Conversation(conversationName, account, jid,
+				Conversation.MODE_MULTI);
+		//this.databaseBackend.createConversation(conversation);
+
+		return conversation;
+	}
+
 	public void archiveConversation(Conversation conversation) {
 		if (conversation.getMode() == Conversation.MODE_MULTI) {
 			leaveMuc(conversation);
@@ -1459,6 +1483,25 @@ public class XmppConnectionService extends Service {
 			conversation.getAccount().getXmppConnection()
 					.sendMessagePacket(packet);
 		}
+
+	}
+	
+	public void inviteToConferenceWithAccount(Account account,Contact contacts , String contactName) {
+	//	for (Contact contact : contacts) {
+			MessagePacket packet = new MessagePacket();
+			//packet.setTo(conversation.getContactJid().split("/")[0]);
+			packet.setTo(contactName);
+			packet.setFrom(account.getFullJid());
+			Element x = new Element("x");
+			x.setAttribute("xmlns", "http://jabber.org/protocol/muc#user");
+			Element invite = new Element("invite");
+			invite.setAttribute("to", contacts.getJid());
+			x.addChild(invite);
+			packet.addChild(x);
+			Log.d(LOGTAG, packet.toString());
+		account.getXmppConnection()
+					.sendMessagePacket(packet);
+		//}
 
 	}
 

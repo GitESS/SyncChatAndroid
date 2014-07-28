@@ -6,7 +6,6 @@ import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.entities.MucOptions.User;
-import hsb.ess.chat.sync.AppLinkService;
 import hsb.ess.chat.ui.ConversationActivity;
 import hsb.ess.chat.ui.ManageAccountActivity;
 

@@ -1,7 +1,6 @@
 package hsb.ess.chat.ui;
 
 import hsb.ess.chat.R;
-import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.services.ImageProvider;
@@ -49,6 +48,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +60,8 @@ public class ConversationActivity extends XmppActivity {
 	public static final String TEXT = "text";
 	public static final String PRESENCE = "eu.siacs.conversations.presence";
 
-	//public static String INVITE_STRING="";
-	
+	// public static String INVITE_STRING="";
+
 	public static final int REQUEST_SEND_MESSAGE = 0x75441;
 	public static final int REQUEST_DECRYPT_PGP = 0x76783;
 	private static final int REQUEST_ATTACH_FILE_DIALOG = 0x48502;
@@ -153,12 +154,12 @@ public class ConversationActivity extends XmppActivity {
 		this.instance = this;
 		setContentView(R.layout.fragment_conversations_overview);
 
-		if(LockScreenActivity.getInstance()!=null){
+		if (LockScreenActivity.getInstance() != null) {
 			Intent i = new Intent(this, LockScreenActivity.class);
 			startActivity(i);
-			
+
 		}
-		
+
 		listView = (ListView) findViewById(R.id.list);
 
 		this.listAdapter = new ArrayAdapter<Conversation>(this,
@@ -386,51 +387,52 @@ public class ConversationActivity extends XmppActivity {
 
 	private void attachFile(final int attachmentChoice) {
 		final Conversation conversation = getSelectedConversation();
-		if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
-			if (hasPgp()) {
-				if (conversation.getContact().getPgpKeyId() != 0) {
-					xmppConnectionService.getPgpEngine().hasKey(
-							conversation.getContact(),
-							new UiCallback<Contact>() {
-
-								@Override
-								public void userInputRequried(PendingIntent pi,
-										Contact contact) {
-									ConversationActivity.this.runIntent(pi,
-											attachmentChoice);
-								}
-
-								@Override
-								public void success(Contact contact) {
-									selectPresenceToAttachFile(attachmentChoice);
-								}
-
-								@Override
-								public void error(int error, Contact contact) {
-									displayErrorDialog(error);
-								}
-							});
-				} else {
-					final ConversationFragment fragment = (ConversationFragment) getFragmentManager()
-							.findFragmentByTag("conversation");
-					if (fragment != null) {
-						fragment.showNoPGPKeyDialog(false,
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										conversation
-												.setNextEncryption(Message.ENCRYPTION_NONE);
-										selectPresenceToAttachFile(attachmentChoice);
-									}
-								});
-					}
-				}
-			} else {
-				showInstallPgpDialog();
-			}
-		} else if (getSelectedConversation().getNextEncryption() == Message.ENCRYPTION_NONE) {
+//		if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
+//			if (hasPgp()) {
+//				if (conversation.getContact().getPgpKeyId() != 0) {
+//					xmppConnectionService.getPgpEngine().hasKey(
+//							conversation.getContact(),
+//							new UiCallback<Contact>() {
+//
+//								@Override
+//								public void userInputRequried(PendingIntent pi,
+//										Contact contact) {
+//									ConversationActivity.this.runIntent(pi,
+//											attachmentChoice);
+//								}
+//
+//								@Override
+//								public void success(Contact contact) {
+//									selectPresenceToAttachFile(attachmentChoice);
+//								}
+//
+//								@Override
+//								public void error(int error, Contact contact) {
+//									displayErrorDialog(error);
+//								}
+//							});
+//				} else {
+//					final ConversationFragment fragment = (ConversationFragment) getFragmentManager()
+//							.findFragmentByTag("conversation");
+//					if (fragment != null) {
+//						fragment.showNoPGPKeyDialog(false,
+//								new OnClickListener() {
+//
+//									@Override
+//									public void onClick(DialogInterface dialog,
+//											int which) {
+//										conversation
+//												.setNextEncryption(Message.ENCRYPTION_NONE);
+//										selectPresenceToAttachFile(attachmentChoice);
+//									}
+//								});
+//					}
+//				}
+//			} else {
+//				showInstallPgpDialog();
+//			}
+//		} else
+			if (getSelectedConversation().getNextEncryption() == Message.ENCRYPTION_NONE) {
 			selectPresenceToAttachFile(attachmentChoice);
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -477,29 +479,29 @@ public class ConversationActivity extends XmppActivity {
 			Toast.makeText(ConversationActivity.this, "Attach files ",
 					Toast.LENGTH_SHORT).show();
 
-			// View menuAttachFile = findViewById(R.id.action_attach_file);
-			// PopupMenu attachFilePopup = new PopupMenu(this, menuAttachFile);
-			// attachFilePopup.inflate(R.menu.attachment_choices);
-			// attachFilePopup
-			// .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			//
-			// @Override
-			// public boolean onMenuItemClick(MenuItem item) {
-			// switch (item.getItemId()) {
-			// case R.id.attach_choose_picture:
-			// attachFile(ATTACHMENT_CHOICE_CHOOSE_IMAGE);
-			// break;
-			// case R.id.attach_take_picture:
-			// attachFile(ATTACHMENT_CHOICE_TAKE_PHOTO);
-			// break;
-			// case R.id.attach_record_voice:
-			// attachFile(ATTACHMENT_CHOICE_RECORD_VOICE);
-			// break;
-			// }
-			// return false;
-			// }
-			// });
-			// attachFilePopup.show();
+			View menuAttachFile = findViewById(R.id.action_attach_file);
+			PopupMenu attachFilePopup = new PopupMenu(this, menuAttachFile);
+			attachFilePopup.inflate(R.menu.attachment_choices);
+			attachFilePopup
+					.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+						@Override
+						public boolean onMenuItemClick(MenuItem item) {
+							switch (item.getItemId()) {
+							case R.id.attach_choose_picture:
+								attachFile(ATTACHMENT_CHOICE_CHOOSE_IMAGE);
+								break;
+							case R.id.attach_take_picture:
+								attachFile(ATTACHMENT_CHOICE_TAKE_PHOTO);
+								break;
+							case R.id.attach_record_voice:
+								attachFile(ATTACHMENT_CHOICE_RECORD_VOICE);
+								break;
+							}
+							return false;
+						}
+					});
+			attachFilePopup.show();
 			break;
 		case R.id.action_add:
 			startActivity(new Intent(this, ContactsActivity.class));
@@ -540,12 +542,14 @@ public class ConversationActivity extends XmppActivity {
 			Intent inviteIntent = new Intent(getApplicationContext(),
 					ContactsActivity.class);
 			inviteIntent.setAction("invite");
-			//INVITE_STRING ="invite";
+			// INVITE_STRING ="invite";
 			inviteIntent.putExtra("uuid", getSelectedConversation().getUuid());
-		//	inviteIntent.putExtra("Inviteuser", "invite");
-		//	inviteIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			// inviteIntent.putExtra("Inviteuser", "invite");
+			// inviteIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
+			// Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(inviteIntent);
-			Log.i("hemant", "action Invite action  " + inviteIntent.getAction() + "uuid "+getSelectedConversation().getUuid());
+			Log.i("hemant", "action Invite action  " + inviteIntent.getAction()
+					+ "uuid " + getSelectedConversation().getUuid());
 			break;
 		// case R.id.action_security:
 		// final Conversation conversation = getSelectedConversation();
@@ -678,7 +682,7 @@ public class ConversationActivity extends XmppActivity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return selectedFragment;
 	}
 
