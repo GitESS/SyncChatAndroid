@@ -46,6 +46,7 @@ public abstract class XmppActivity extends Activity {
 			xmppConnectionService = binder.getService();
 			xmppConnectionServiceBound = true;
 			onBackendConnected();
+			Utils.tempxmppConnectionService=xmppConnectionService;
 		}
 
 		@Override

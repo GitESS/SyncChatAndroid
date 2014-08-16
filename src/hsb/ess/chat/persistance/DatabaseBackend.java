@@ -5,6 +5,7 @@ import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.entities.Roster;
+import hsb.ess.chat.ui.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,14 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 5;
 
 	private static String CREATE_CONTATCS_STATEMENT = "create table "
-			+ Contact.TABLENAME + "(" + Contact.ACCOUNT + " TEXT, " + Contact.SERVERNAME + " TEXT, "
-			+ Contact.SYSTEMNAME + " TEXT," + Contact.JID + " TEXT,"
-			+ Contact.KEYS + " TEXT," + Contact.PHOTOURI + " TEXT,"
-			+ Contact.OPTIONS + " NUMBER," + Contact.SYSTEMACCOUNT
-			+ " NUMBER, " + "FOREIGN KEY(" + Contact.ACCOUNT + ") REFERENCES "
-			+ Account.TABLENAME + "(" + Account.UUID + ") ON DELETE CASCADE, UNIQUE("+Contact.ACCOUNT+", "+Contact.JID+") ON CONFLICT REPLACE);";
+			+ Contact.TABLENAME + "(" + Contact.ACCOUNT + " TEXT, "
+			+ Contact.SERVERNAME + " TEXT, " + Contact.SYSTEMNAME + " TEXT,"
+			+ Contact.JID + " TEXT," + Contact.KEYS + " TEXT,"
+			+ Contact.PHOTOURI + " TEXT," + Contact.OPTIONS + " NUMBER,"
+			+ Contact.SYSTEMACCOUNT + " NUMBER, " + "FOREIGN KEY("
+			+ Contact.ACCOUNT + ") REFERENCES " + Account.TABLENAME + "("
+			+ Account.UUID + ") ON DELETE CASCADE, UNIQUE(" + Contact.ACCOUNT
+			+ ", " + Contact.JID + ") ON CONFLICT REPLACE);";
 
 	public DatabaseBackend(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,9 +78,10 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 					+ Message.TYPE + " NUMBER");
 		}
 		if (oldVersion < 5 && newVersion >= 5) {
-			db.execSQL("DROP TABLE "+Contact.TABLENAME);
+			db.execSQL("DROP TABLE " + Contact.TABLENAME);
 			db.execSQL(CREATE_CONTATCS_STATEMENT);
-			db.execSQL("UPDATE "+Account.TABLENAME+ " SET "+Account.ROSTERVERSION+" = NULL");
+			db.execSQL("UPDATE " + Account.TABLENAME + " SET "
+					+ Account.ROSTERVERSION + " = NULL");
 		}
 	}
 
@@ -94,7 +98,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 	}
 
 	public void createMessage(Message message) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		SQLiteDatabase db = DatabaseBackend.this.getWritableDatabase();
+		Log.i(Utils.LOG_IMAGE, "insert values" + message.getContentValues());
+		
 		db.insert(Message.TABLENAME, null, message.getContentValues());
 	}
 
@@ -129,24 +135,26 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 		}
 		return list;
 	}
-	
+
 	public List<Message> getMessages(Conversation conversations, int limit) {
-		return getMessages(conversations, limit,-1);
+		return getMessages(conversations, limit, -1);
 	}
 
-	public List<Message> getMessages(Conversation conversation, int limit, long timestamp) {
+	public List<Message> getMessages(Conversation conversation, int limit,
+			long timestamp) {
 		List<Message> list = new CopyOnWriteArrayList<Message>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor;
-		if (timestamp==-1) {
+		if (timestamp == -1) {
 			String[] selectionArgs = { conversation.getUuid() };
 			cursor = db.query(Message.TABLENAME, null, Message.CONVERSATION
-					+ "=?", selectionArgs, null, null, Message.TIME_SENT + " DESC",
-					String.valueOf(limit));
+					+ "=?", selectionArgs, null, null, Message.TIME_SENT
+					+ " DESC", String.valueOf(limit));
 		} else {
-			String[] selectionArgs = { conversation.getUuid() , ""+timestamp};
+			String[] selectionArgs = { conversation.getUuid(), "" + timestamp };
 			cursor = db.query(Message.TABLENAME, null, Message.CONVERSATION
-					+ "=? and "+Message.TIME_SENT+"<?", selectionArgs, null, null, Message.TIME_SENT + " DESC",
+					+ "=? and " + Message.TIME_SENT + "<?", selectionArgs,
+					null, null, Message.TIME_SENT + " DESC",
 					String.valueOf(limit));
 		}
 		if (cursor.getCount() > 0) {
@@ -204,7 +212,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
 	@Override
 	public SQLiteDatabase getWritableDatabase() {
-		SQLiteDatabase db = super.getWritableDatabase();
+		SQLiteDatabase db;
+
+		db = super.getWritableDatabase();
 		db.execSQL("PRAGMA foreign_keys=ON;");
 		return db;
 	}
@@ -214,7 +224,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 		String[] args = { message.getUuid() };
 		db.update(Message.TABLENAME, message.getContentValues(), Message.UUID
 				+ "=?", args);
-	//	Log.i("hemant", "Message update" + message.getContentValues());
+		// Log.i("hemant", "Message update" + message.getContentValues());
 	}
 
 	public void readRoster(Roster roster) {
@@ -227,16 +237,16 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 			roster.initContact(Contact.fromCursor(cursor));
 		}
 	}
-	
+
 	public void writeRoster(Roster roster) {
 		Account account = roster.getAccount();
 		SQLiteDatabase db = this.getWritableDatabase();
-		for(Contact contact : roster.getContacts()) {
+		for (Contact contact : roster.getContacts()) {
 			if (contact.getOption(Contact.Options.IN_ROSTER)) {
 				db.insert(Contact.TABLENAME, null, contact.getContentValues());
 			} else {
-				String where = Contact.ACCOUNT + "=? AND "+Contact.JID+"=?";
-				String[] whereArgs = {account.getUuid(), contact.getJid()};
+				String where = Contact.ACCOUNT + "=? AND " + Contact.JID + "=?";
+				String[] whereArgs = { account.getUuid(), contact.getJid() };
 				db.delete(Contact.TABLENAME, where, whereArgs);
 			}
 		}

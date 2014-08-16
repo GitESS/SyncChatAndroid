@@ -81,8 +81,8 @@
     <string name="add_contact">Add contact</string>
     <string name="send_failed">delivery failed</string>
     <string name="send_rejected">rejected</string>
-    <string name="receiving_image">Receiving image file. Please wait&#8230;</string>
-    <string name="preparing_image">Preparing image for transmission</string>
+    <string name="receiving_image">Receiving file. Please wait&#8230;</string>
+    <string name="preparing_image">Preparing for transmission</string>
     <string name="action_clear_history">Clear history</string>
     <string name="clear_conversation_history">Clear Conversation History</string>
     <string name="clear_histor_msg">Do you want to delete all messages within this Conversation?\n\n</string>
@@ -93,9 +93,9 @@
     <string name="send_otr_message">Send OTR encrypted message</string>
     <string name="send_pgp_message">Send OpenPGP encrypted message</string>
     <string name="your_nick_has_been_changed">Your nickname has been changed</string>
-    <string name="download_image">Download Image</string>
-    <string name="error_loading_image">Error loading image (File not found)</string>
-    <string name="image_offered_for_download"><i>Image file offered for download</i></string>
+    <string name="download_image">Download </string>
+    <string name="error_loading_image">Error loading  (File not found)</string>
+    <string name="image_offered_for_download"><i> file offered for download</i></string>
     <string name="not_connected">Not Connected</string>
     <string name="otr_messages">OTR encrypted messages</string>
     <string name="manage_account">Manage account</string>
@@ -149,7 +149,7 @@
     <string name="pref_show_last_seen_summary">Display the latest time a contact has been seen online</string>
     <string name="openpgp_error">OpenKeychain reporeted an error</string>
     <string name="error_decrypting_file">I/O Error decrypting file</string>
-    <string name="error_copying_image_file">Error copying image file.</string>
+    <string name="error_copying_image_file">Error copying  file.</string>
     <string name="accept">Accept</string>
     <string name="error">An error has occurred</string>
     <string name="pref_grant_presence_updates">Grant presence updates</string>

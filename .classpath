@@ -10,5 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/otr4j-0.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/AppLinkLibraryAndroid-2-1-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/javaFlacEncoder-0.3.1.jar"/>
+	<classpathentry kind="lib" path="libs/asmack-android-6-0.8.1.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

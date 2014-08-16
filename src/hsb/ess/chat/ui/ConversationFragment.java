@@ -14,6 +14,7 @@ import hsb.ess.chat.sync.LockScreenActivity;
 import hsb.ess.chat.utils.UIHelper;
 import hsb.ess.chat.xmpp.jingle.JingleConnection;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,9 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Selection;
@@ -271,6 +274,16 @@ public class ConversationFragment extends Fragment {
 						filesize = "0 KB";
 					}
 				}
+				if(message.getType() == Message.TYPE_AUDIO)
+				{
+					String[] fileParams = message.getBody().split(",");
+					try {
+						long size = Long.parseLong(fileParams[0]);
+						filesize = size / 1024 + " KB";
+					} catch (NumberFormatException e) {
+						filesize = "0 KB";
+					}
+				}
 				switch (message.getStatus()) {
 				case Message.STATUS_WAITING:
 					info = getString(R.string.waiting);
@@ -410,19 +423,42 @@ public class ConversationFragment extends Fragment {
 						scalledW = (int) target;
 						scalledH = (int) (h / ((double) w / target));
 					}
-					viewHolder.image
-							.setLayoutParams(new LinearLayout.LayoutParams(
-									scalledW, scalledH));
+//					viewHolder.image
+//							.setLayoutParams(new LinearLayout.LayoutParams(
+			//						scalledW, scalledH));
 				}
-				activity.loadBitmap(message, viewHolder.image);
+			//	activity.loadBitmap(message, viewHolder.image);
+				activity.loadAudio(message);
+				Log.i(Utils.LOG_IMAGE, "Load Message");
 				viewHolder.image.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
+						
+//						intent.setDataAndType(
+//								ImageProvider.getContentUri(message), "image/*");
+						Uri uri= ImageProvider.getContentUri(message);
+						
+						String u=uri.toString();
+						String[] parts = u.split("/");
+
+						Log.i("test", "length" + parts.length + " Last index"
+								+ parts[parts.length - 1]);
+						String[] name = parts[parts.length - 1].split("\\.");
+						String fileName = name[0];
+						String path = Environment.getExternalStorageDirectory()
+								+ File.separator + "SyncChat" + File.separator + fileName
+								+ ".wav";
+						Log.i("Conversation Fragments", "uri"+path);
+						//Intent intent = new Intent();  
 						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setDataAndType(
-								ImageProvider.getContentUri(message), "image/*");
+						//intent.setAction(android.content.Intent.ACTION_VIEW);  
+					//	Uri ui= Uri.parse(path);
+						File file = new File(path);  
+						intent.setDataAndType(Uri.fromFile(file), "audio/*");  
 						startActivity(intent);
+						
+				//		startActivity(intent);
 					}
 				});
 				viewHolder.image
@@ -494,7 +530,7 @@ public class ConversationFragment extends Fragment {
 						}
 						viewHolder.indicator = (ImageView) view
 								.findViewById(R.id.security_indicator);
-						viewHolder.image = (ImageView) view
+					 	viewHolder.image= (ImageView) view
 								.findViewById(R.id.message_image);
 						viewHolder.messageBody = (TextView) view
 								.findViewById(R.id.message_body);
@@ -551,6 +587,37 @@ public class ConversationFragment extends Fragment {
 				}
 
 				if (item.getType() == Message.TYPE_IMAGE) {
+					if (item.getStatus() == Message.STATUS_RECIEVING) {
+						displayInfoMessage(viewHolder, R.string.receiving_image);
+					} else if (item.getStatus() == Message.STATUS_RECEIVED_OFFER) {
+						viewHolder.image.setVisibility(View.GONE);
+						viewHolder.messageBody.setVisibility(View.GONE);
+						viewHolder.download_button.setVisibility(View.VISIBLE);
+						viewHolder.download_button
+								.setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										JingleConnection connection = item
+												.getJingleConnection();
+										if (connection != null) {
+											connection.accept();
+										} else {
+											Log.d("xmppService",
+													"attached jingle connection was null");
+										}
+									}
+								});
+					} else if ((item.getEncryption() == Message.ENCRYPTION_DECRYPTED)
+							|| (item.getEncryption() == Message.ENCRYPTION_NONE)) {
+						displayImageMessage(viewHolder, item);
+					} else if (item.getEncryption() == Message.ENCRYPTION_PGP) {
+						displayInfoMessage(viewHolder,
+								R.string.encrypted_message);
+					} else {
+						displayDecryptionFailed(viewHolder);
+					}
+				} else if (item.getType() == Message.TYPE_AUDIO) {
 					if (item.getStatus() == Message.STATUS_RECIEVING) {
 						displayInfoMessage(viewHolder, R.string.receiving_image);
 					} else if (item.getStatus() == Message.STATUS_RECEIVED_OFFER) {

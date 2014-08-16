@@ -10,6 +10,7 @@ import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.entities.Presences;
+import hsb.ess.chat.persistance.DatabaseBackend;
 import hsb.ess.chat.ui.ContactsActivity;
 import hsb.ess.chat.ui.ConversationActivity;
 import hsb.ess.chat.ui.ConversationFragment;
@@ -737,6 +738,33 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		// TODO Auto-generated method stub
 
 		switch (notification.getCustomButtonName()) {
+
+		case 105:
+
+			Vector<TTSChunk> initChunks1 = TTSChunkFactory
+					.createSimpleTTSChunks("Speak To Record!");
+			try {
+				PerformAudioPassThru msg = new PerformAudioPassThru();
+				msg.setInitialPrompt(initChunks1);
+				msg.setAudioPassThruDisplayText1("Sync Chat ");
+				msg.setAudioPassThruDisplayText2("Recording..");
+				// msg.setSamplingRate(samplingRate)
+				msg.setSamplingRate(SamplingRate._8KHZ);
+				msg.setMaxDuration(Integer.parseInt("10000"));
+				msg.setBitsPerSample(BitsPerSample._8_BIT);
+				msg.setAudioType(AudioType.PCM);
+				msg.setCorrelationID(autoIncCorrId++);
+				msg.setMuteAudio(false);
+				AudioRecorderClass.getInstance().resetClass();
+				AudioRecorderClass.getInstance().latestPerformAudioPassThruMsg = msg;
+				AudioRecorderClass.getInstance().mySampleRate = 8000;
+				AudioRecorderClass.getInstance().myBitsPerSample = 8;
+				Log.i("PerformAudioPClass", msg.toString());
+				proxy.sendRPCRequest(msg);
+			} catch (SyncException e) {
+				e.printStackTrace();
+			}
+			break;
 		case 106:
 			performInteraction();
 
@@ -770,6 +798,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 				Log.i("PerformAudioPClass", msg.toString());
 				proxy.sendRPCRequest(msg);
 			} catch (SyncException e) {
+				e.printStackTrace();
 			}
 			break;
 
@@ -797,31 +826,75 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 			break;
 		case 111:
 			if (conACOUNT_NAME != null) {
-				sendMessage(conSENDER_NAME, conACOUNT_NAME, conCONTACT_JID,
-						conCONVERSATION_MODE);
+				// sendMessage(conSENDER_NAME, conACOUNT_NAME, conCONTACT_JID,
+				// conCONVERSATION_MODE);
+				// sendRecordedMessage();
+
+				Vector<TTSChunk> initChunks3 = TTSChunkFactory
+						.createSimpleTTSChunks("Speak To Record!");
+				try {
+					PerformAudioPassThru msg = new PerformAudioPassThru();
+					msg.setInitialPrompt(initChunks3);
+					msg.setAudioPassThruDisplayText1("Sync Chat ");
+					msg.setAudioPassThruDisplayText2("Recording..");
+					// msg.setSamplingRate(samplingRate)
+					msg.setSamplingRate(SamplingRate._8KHZ);
+					msg.setMaxDuration(Integer.parseInt("10000"));
+					msg.setBitsPerSample(BitsPerSample._8_BIT);
+					msg.setAudioType(AudioType.PCM);
+					msg.setCorrelationID(autoIncCorrId++);
+					msg.setMuteAudio(false);
+					AudioRecorderClass.getInstance().resetClass();
+					AudioRecorderClass.getInstance().latestPerformAudioPassThruMsg = msg;
+					AudioRecorderClass.getInstance().mySampleRate = 8000;
+					AudioRecorderClass.getInstance().myBitsPerSample = 8;
+					Log.i("PerformAudioPClass", msg.toString());
+					proxy.sendRPCRequest(msg);
+				} catch (SyncException e) {
+					e.printStackTrace();
+				}
+
 			} else {
-				final List<Account> accountList = new ArrayList<Account>();
-//				ConversationActivity.getInstance().runOnUiThread(
-//						new Runnable() {
-//
-//							@Override
-//							public void run() {
-								// TODO Auto-generated method stub
-								accountList.addAll(ConversationActivity
-										.getInstance().xmppConnectionService
-										.getAccounts());
-
-								finalaccount = accountList.get(0);
-								sendMessage(conSENDER_NAME, finalaccount,
-										conCONTACT_JID, conCONVERSATION_MODE);
-					//		}
-					//	});
-
+				// final List<Account> accountList = new ArrayList<Account>();
+				// accountList
+				// .addAll(ConversationActivity.getInstance().xmppConnectionService
+				// .getAccounts());
+				//
+				// finalaccount = accountList.get(0);
+				// sendMessage(conSENDER_NAME, finalaccount, conCONTACT_JID,
+				// conCONVERSATION_MODE);
+				// // }
+				// // });
+				//
+				// }
+				// Log.i("Applink", "Sender Name" + conSENDER_NAME + "Account"
+				// + conACOUNT_NAME + "JID" + conCONTACT_JID + "Mode"
+				// + conCONVERSATION_MODE);
+				Vector<TTSChunk> initChunks2 = TTSChunkFactory
+						.createSimpleTTSChunks("Speak To Record!");
+				try {
+					PerformAudioPassThru msg = new PerformAudioPassThru();
+					msg.setInitialPrompt(initChunks2);
+					msg.setAudioPassThruDisplayText1("Sync Chat ");
+					msg.setAudioPassThruDisplayText2("Recording..");
+					// msg.setSamplingRate(samplingRate)
+					msg.setSamplingRate(SamplingRate._8KHZ);
+					msg.setMaxDuration(Integer.parseInt("10000"));
+					msg.setBitsPerSample(BitsPerSample._8_BIT);
+					msg.setAudioType(AudioType.PCM);
+					msg.setCorrelationID(autoIncCorrId++);
+					msg.setMuteAudio(false);
+					AudioRecorderClass.getInstance().resetClass();
+					AudioRecorderClass.getInstance().latestPerformAudioPassThruMsg = msg;
+					AudioRecorderClass.getInstance().mySampleRate = 8000;
+					AudioRecorderClass.getInstance().myBitsPerSample = 8;
+					Log.i("PerformAudioPClass", msg.toString());
+					proxy.sendRPCRequest(msg);
+				} catch (SyncException e) {
+					e.printStackTrace();
+				}
+				// sendRecordedMessage();
 			}
-			Log.i("Applink", "Sender Name" + conSENDER_NAME + "Account"
-					+ conACOUNT_NAME + "JID" + conCONTACT_JID + "Mode"
-					+ conCONVERSATION_MODE);
-
 			break;
 
 		case 112:
@@ -928,8 +1001,16 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		ConversationActivity.getInstance().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				RecordingAudio.getInstance().performAudioPassThruResponse(
-						result);
+				// if (conACOUNT_NAME != null)
+				// RecordingAudio.getInstance().performAudioPassThruResponse(
+				// result,
+				// getConversation(conSENDER_NAME, conACOUNT_NAME,
+				// conCONTACT_JID, conCONVERSATION_MODE));
+
+				AudioRecorderClass.getInstance().performAudioPassThruResponse(
+						result,
+						getConversation(conSENDER_NAME, conACOUNT_NAME,
+								conCONTACT_JID, conCONVERSATION_MODE));
 			}
 		});
 
@@ -960,7 +1041,15 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		mainActivity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				RecordingAudio.getInstance().endAudioPassThruResponse(result);
+				// RecordingAudio.getInstance().endAudioPassThruResponse(
+				// result,
+				// getConversation(conSENDER_NAME, conACOUNT_NAME,
+				// conCONTACT_JID, conCONVERSATION_MODE));
+
+				AudioRecorderClass.getInstance().endAudioPassThruResponse(
+						result,
+						getConversation(conSENDER_NAME, conACOUNT_NAME,
+								conCONTACT_JID, conCONVERSATION_MODE));
 			}
 		});
 	}
@@ -973,7 +1062,8 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		ConversationActivity.getInstance().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				RecordingAudio.getInstance().audioPassThru(aptData);
+				AudioRecorderClass.getInstance().audioPassThru(aptData);
+				// RecordingAudio.getInstance().audioPassThru(aptData);
 			}
 
 		});
@@ -1044,6 +1134,13 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 			int mode) {
 
 		try {
+			List<Account> accountList = new ArrayList<Account>();
+			accountList
+					.addAll(ConversationActivity.getInstance().xmppConnectionService
+							.getAccounts());
+
+			conACOUNT_NAME = accountList.get(0);
+
 			proxy.speak(" " + message, autoIncCorrId++);
 			if (!isConversationSelected) {
 
@@ -1384,7 +1481,8 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		SoftButtonName.add("Friends");
 		SoftButtonName.add("Groups");
 		SoftButtonName.add("Record");
-		//SoftButtonName.add("Create Group");
+		SoftButtonName.add("recordTest");
+		// SoftButtonName.add("Create Group");
 		// SoftButtonName.add("Vehicle");
 
 		// Add Soft buttonID
@@ -1392,7 +1490,8 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		SoftButtonId.add(106);
 		SoftButtonId.add(107);
 		SoftButtonId.add(108);
-		//SoftButtonId.add(109);
+		SoftButtonId.add(105);
+		// SoftButtonId.add(109);
 
 		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
 		SoftButton softButton;
@@ -1633,6 +1732,95 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 			// TODO: handle exception
 		}
 
+	}
+
+	private void sendRecordedMessage() {
+		Vector<TTSChunk> initChunks = TTSChunkFactory
+				.createSimpleTTSChunks("Speak To Record!");
+		try {
+			PerformAudioPassThru msg = new PerformAudioPassThru();
+			msg.setInitialPrompt(initChunks);
+			msg.setAudioPassThruDisplayText1("Sync Chat ");
+			msg.setAudioPassThruDisplayText2("Recording..");
+			// msg.setSamplingRate(samplingRate)
+			msg.setSamplingRate(SamplingRate._8KHZ);
+			msg.setMaxDuration(Integer.parseInt("10000"));
+			msg.setBitsPerSample(BitsPerSample._8_BIT);
+			msg.setAudioType(AudioType.PCM);
+			msg.setCorrelationID(autoIncCorrId++);
+			msg.setMuteAudio(false);
+			// RecordingAudio.getInstance().resetClass();
+			RecordingAudio.getInstance().latestPerformAudioPassThruMsg = msg;
+			RecordingAudio.getInstance().mySampleRate = 8000;
+			RecordingAudio.getInstance().myBitsPerSample = 8;
+			// RecordingAudio.getInstance().latestPerformAudioPassThruMsg = msg;
+			// RecordingAudio.getInstance().mySampleRate = 8000;
+			// RecordingAudio.getInstance().myBitsPerSample = 8;
+			Log.i("PerformAudioPClass", msg.toString());
+			proxy.sendRPCRequest(msg);
+		} catch (SyncException e) {
+		}
+	}
+
+	/**
+	 * Returns conversation
+	 * 
+	 * */
+	private Conversation getConversation(String name, Account con, String jid,
+			int mode) {
+		DatabaseBackend databaseBackend;
+		databaseBackend = DatabaseBackend.getInstance(getApplicationContext());
+
+		// Conversation conver = new Conversation(name, con, contactJid, mode);
+
+		// for (Conversation conv : this.getConversations()) {
+		// if ((conv.getAccount().equals(account))
+		// && (conv.getContactJid().split("/")[0].equals(jid))) {
+		// return conv;
+		// }
+		// }
+		Conversation conversation = databaseBackend.findConversation(con, jid);
+		if (conversation != null) {
+			conversation.setStatus(Conversation.STATUS_AVAILABLE);
+			conversation.setAccount(con);
+			// if (muc) {
+			// conversation.setMode(Conversation.MODE_MULTI);
+			// } else {
+			conversation.setMode(Conversation.MODE_SINGLE);
+			// }
+			conversation.setMessages(databaseBackend.getMessages(conversation,
+					50));
+			databaseBackend.updateConversation(conversation);
+		} else {
+			String conversationName;
+			Contact contact = con.getRoster().getContact(jid);
+			if (contact != null) {
+				conversationName = contact.getDisplayName();
+			} else {
+				conversationName = jid.split("@")[0];
+			}
+			// if (muc) {
+			// conversation = new Conversation(conversationName, account, jid,
+			// Conversation.MODE_MULTI);
+			// } else {
+			// conversation = new Conversation(conversationName, account, jid,
+			// Conversation.MODE_SINGLE);
+			// }
+			conversation = new Conversation(conversationName, con, jid,
+					Conversation.MODE_SINGLE);
+			databaseBackend.createConversation(conversation);
+		}
+		// this.conversations.add(conversation);
+		// if ((account.getStatus() == Account.STATUS_ONLINE)
+		// && (conversation.getMode() == Conversation.MODE_MULTI)) {
+		// joinMuc(conversation);
+		// }
+		// if (this.convChangedListener != null) {
+		// this.convChangedListener.onConversationListChanged();
+		// }
+		return conversation;
+
+		// return conver;
 	}
 }
 

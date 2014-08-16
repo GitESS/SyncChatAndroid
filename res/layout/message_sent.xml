@@ -28,7 +28,7 @@
                 android:adjustViewBounds="true"
                 android:paddingBottom="2dp"
                 android:scaleType="fitXY"
-                android:background="#333333"
+                android:background="@drawable/ic_audio"
                 />
 
             <TextView

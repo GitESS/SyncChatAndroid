@@ -50,8 +50,8 @@
 	    
 	    <ImageView
 	        android:id="@+id/conversation_lastimage"
-	        android:layout_width="fill_parent"
-	        android:layout_height="36dp"
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
 	        android:background="#333333"
 	        android:scaleType="centerCrop" />
 

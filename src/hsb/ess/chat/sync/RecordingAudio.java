@@ -1,6 +1,6 @@
 package hsb.ess.chat.sync;
 
-
+import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.ui.ConversationActivity;
 
 import java.io.BufferedOutputStream;
@@ -12,9 +12,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Currency;
+import java.util.Date;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -34,22 +38,20 @@ public class RecordingAudio {
 	private MediaPlayer mMediaPlayerAudio = null;
 	public PerformAudioPassThru latestPerformAudioPassThruMsg = null;
 
-//	String fileName = Environment.getExternalStorageDirectory()
-//			+ "/flac_audio.flac";
-	//private static final String STR_FILE_FLAC = "app_audio.flac";
-	
-//	FLACStreamEncoder flacStreamEncoder;
-//	FLACEncoder flacEncoder;
-//	FLACFileWriter flacFileWriter;
-//	FLACOutputStream flacOutputStream;
-	
-	
-	
+	// String fileName = Environment.getExternalStorageDirectory()
+	// + "/flac_audio.flac";
+	// private static final String STR_FILE_FLAC = "app_audio.flac";
+
+	// FLACStreamEncoder flacStreamEncoder;
+	// FLACEncoder flacEncoder;
+	// FLACFileWriter flacFileWriter;
+	// FLACOutputStream flacOutputStream;
+
 	public static RecordingAudio getInstance() {
 		if (null == mRecording) {
 			mRecording = new RecordingAudio();
 		}
-	
+
 		return mRecording;
 	}
 
@@ -58,12 +60,12 @@ public class RecordingAudio {
 		if (aptData == null) {
 			return;
 		}
-		
+
 		Log.i("app", "len =" + aptData.length + " count=" + iMByteCount);
 
 		iMByteCount = iMByteCount + aptData.length;
 		File audioOutFile = getAudioOutputFile(INT_PCM);
-		//mLastAmplitudes = new FLACRecorder.Amplitudes(amp);
+		// mLastAmplitudes = new FLACRecorder.Amplitudes(amp);
 		try {
 			if (mOutStreamAudio == null) {
 				mOutStreamAudio = new BufferedOutputStream(
@@ -75,18 +77,18 @@ public class RecordingAudio {
 		} catch (IOException e) {
 		}
 
-		
 		// mHandler.obtainMessage(MSG_WRITE_ERROR).sendToTarget();
 
 	}
 
-	public void performAudioPassThruResponse(Result result) {
+	public void performAudioPassThruResponse(Result result,
+			Conversation conversation) {
 		closeAudioStream();
 		closeAudioMediaPlayer();
 
 		// if (Result.SUCCESS == result && ComData.getInstance().mbSaveWave) {
-		 saveAsWav();
-		//saveAsFlac();
+		saveAsWav(conversation);
+		// saveAsFlac();
 		// } else if (Result.SUCCESS != result) {
 		// File outFile = getAudioOutputFile(INT_PCM);
 		// if ((outFile != null) && outFile.exists()) {
@@ -109,13 +111,15 @@ public class RecordingAudio {
 		// }
 	}
 
-	public void endAudioPassThruResponse(Result result) {
-		performAudioPassThruResponse(result);
+	public void endAudioPassThruResponse(Result result,
+			Conversation conversation) {
+		performAudioPassThruResponse(result, conversation);
 	}
-/** 
- * Close Audio Strean
- * 
- * */
+
+	/**
+	 * Close Audio Strean
+	 * 
+	 * */
 	public void closeAudioStream() {
 		if (mOutStreamAudio != null) {
 			try {
@@ -151,15 +155,36 @@ public class RecordingAudio {
 	private File getAudioOutputFile(int iTypePar) {
 
 		String sFileType = "";
+		Date date = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd HH-mm-ss");
+
 		if (iTypePar == INT_WAV) {
-			sFileType = STR_FILE_WAV;
+			sFileType = dateFormat.format(date) + ".wav";
+
+			// sFileType = STR_FILE_WAV;
 		} else if (iTypePar == INT_PCM) {
 			sFileType = STR_FILE_PCM;
 		}
 
-		File baseDir = isWritable() ? Environment.getExternalStorageDirectory()
-				: ConversationActivity.getInstance().getFilesDir();
-		File audioOutFile = new File(baseDir, sFileType);
+		// File baseDir = isWritable() ?
+		// Environment.getExternalStorageDirectory()
+		// : ConversationActivity.getInstance().getFilesDir();
+
+		File folder = new File(Environment.getExternalStorageDirectory()
+				+ File.separator + "SyncChat");
+
+		if (!folder.exists()) {
+			folder.mkdir();
+		}
+		File folderSent = new File(Environment.getExternalStorageDirectory()
+				+ File.separator + "SyncChat" + File.separator + "Sent");
+
+		if (!folderSent.exists()) {
+			folderSent.mkdir();
+		}
+
+		File audioOutFile = new File(folderSent, sFileType);
 		return audioOutFile;
 	}
 
@@ -218,13 +243,15 @@ public class RecordingAudio {
 		return header;
 	}
 
-	private boolean saveAsWav() {
+	private boolean saveAsWav(Conversation conversation) {
+		File currentPath = getAudioOutputFile(INT_WAV);
 		try {
 			byte[] myData;
+
 			DataOutputStream outFile = new DataOutputStream(
-					new FileOutputStream(getAudioOutputFile(INT_WAV)));
+					new FileOutputStream(currentPath));
 			long totalAudioLen = iMByteCount;
-			long totalDataLen = totalAudioLen + 36;
+			long totalDataLen = totalAudioLen + 30;
 			long longSampleRate = mySampleRate;
 			int channels = 1;
 			long byteRate = mySampleRate * channels * myBitsPerSample / 8;
@@ -242,9 +269,28 @@ public class RecordingAudio {
 			e.printStackTrace();
 			return false;
 		}
+
+	//	String pathSong = "/sdcard/PiyaMilenge.mp3";
+		// Uri uri = Uri.parse(pathSong);
+//		Uri uri = Uri.fromFile(currentPath);
+//		ConversationActivity conAct;
+//		conAct = new ConversationActivity();
+//		conAct.attachAudioToConversation(conversation, uri,
+//				ConversationActivity.getInstance().xmppConnectionService);
 		return true;
 	}
 
+	public void resetClass() {
+		// TODO Auto-generated method stub
+		mRecording = null;
 
+		iMByteCount = 0;
+		mySampleRate = 0;
+		myBitsPerSample = 0;
+		mOutStreamAudio = null;
+		mMediaPlayerAudio = null;
+		latestPerformAudioPassThruMsg = null;
+
+	}
 
 }

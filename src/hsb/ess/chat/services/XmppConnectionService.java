@@ -17,6 +17,7 @@ import hsb.ess.chat.sync.AppLinkService;
 import hsb.ess.chat.ui.OnAccountListChangedListener;
 import hsb.ess.chat.ui.OnConversationListChangedListener;
 import hsb.ess.chat.ui.UiCallback;
+import hsb.ess.chat.ui.Utils;
 import hsb.ess.chat.utils.CryptoHelper;
 import hsb.ess.chat.utils.ExceptionHelper;
 import hsb.ess.chat.utils.OnPhoneContactsLoadedListener;
@@ -143,6 +144,8 @@ public class XmppConnectionService extends Service {
 		@Override
 		public void onMessagePacketReceived(Account account,
 				MessagePacket packet) {
+
+			Log.e("xmpp Connection Service", "On message packet recived");
 			Message message = null;
 			boolean notify = true;
 			if (getPreferences().getBoolean(
@@ -401,6 +404,7 @@ public class XmppConnectionService extends Service {
 		@Override
 		public void onJinglePacketReceived(Account account, JinglePacket packet) {
 			mJingleConnectionManager.deliverPacket(account, packet);
+			Log.i(Utils.LOG_IMAGE, "on jingle packetRecieved");
 		}
 	};
 
@@ -432,6 +436,8 @@ public class XmppConnectionService extends Service {
 	public Message attachImageToConversation(final Conversation conversation,
 			final Uri uri, final UiCallback<Message> callback) {
 		final Message message;
+		Log.i(Utils.LOG_IMAGE,
+				"in xmppConnectionService , attachImage to Conversaton");
 		if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
 			message = new Message(conversation, "",
 					Message.ENCRYPTION_DECRYPTED);
@@ -448,11 +454,69 @@ public class XmppConnectionService extends Service {
 			public void run() {
 				try {
 					getFileBackend().copyImageToPrivateStorage(message, uri);
+					Log.i(Utils.LOG_IMAGE,
+							"in xmppConnectionService , image Copied");
 					if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
 						getPgpEngine().encrypt(message, callback);
 					} else {
 						callback.success(message);
 					}
+				} catch (FileBackend.ImageCopyException e) {
+					callback.error(e.getResId(), message);
+				}
+			}
+		}).start();
+		return message;
+	}
+
+	public Message attachAudioToConversation(final Conversation conversation,
+			final Uri uri, final UiCallback<Message> callback) {
+		Log.i(Utils.LOG_IMAGE,
+				"in xmppConnectionService audio, attachImage to Conversaton");
+		final Message message;
+		if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
+			message = new Message(conversation, "",
+					Message.ENCRYPTION_DECRYPTED);
+		} else {
+			message = new Message(conversation, "",
+					conversation.getNextEncryption());
+		}
+		message.setPresence(conversation.getNextPresence());
+		message.setType(Message.TYPE_IMAGE);
+		message.setStatus(Message.STATUS_OFFERED);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Log.i("file transfer", "message" + message + " URI" + uri);
+					if (getFileBackend() == null) {
+						fileBackend = new FileBackend(
+								XmppConnectionService.this);
+						Log.i(Utils.LOG_IMAGE,
+								"in xmppConnectionService audio, image Copied");
+						Log.i("filetransfer", "getfileBackend is null");
+						getFileBackend()
+								.copyAudioToPrivateStorage(message, uri);
+						if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
+							getPgpEngine().encrypt(message, callback);
+						} else {
+							callback.success(message);
+						}
+
+					} else {
+						Log.i("filetransfer", "getfileBackend is not null");
+						getFileBackend()
+								.copyAudioToPrivateStorage(message, uri);
+						Log.i(Utils.LOG_IMAGE,
+								"in xmppConnectionService audio , image Copied");
+						if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
+							getPgpEngine().encrypt(message, callback);
+						} else {
+							callback.success(message);
+						}
+					}
+
 				} catch (FileBackend.ImageCopyException e) {
 					callback.error(e.getResId(), message);
 				}
@@ -718,6 +782,7 @@ public class XmppConnectionService extends Service {
 	}
 
 	synchronized public void sendMessage(Message message) {
+		Log.i(Utils.LOG_IMAGE, "Send message is called");
 		Account account = message.getConversation().getAccount();
 		Conversation conv = message.getConversation();
 		MessagePacket packet = null;
@@ -725,6 +790,35 @@ public class XmppConnectionService extends Service {
 		boolean send = false;
 		if (account.getStatus() == Account.STATUS_ONLINE) {
 			if (message.getType() == Message.TYPE_IMAGE) {
+				Log.i(Utils.LOG_IMAGE, "send message , type image");
+				Log.i(Utils.LOG_IMAGE,
+						"Send Message Presence ," + message.getPresence());
+				if (message.getPresence() != null) {
+					if (message.getEncryption() == Message.ENCRYPTION_OTR) {
+						if (!conv.hasValidOtrSession()
+								&& (message.getPresence() != null)) {
+							conv.startOtrSession(getApplicationContext(),
+									message.getPresence(), true);
+							message.setStatus(Message.STATUS_WAITING);
+						} else if (conv.hasValidOtrSession()
+								&& conv.getOtrSession().getSessionStatus() == SessionStatus.ENCRYPTED) {
+							mJingleConnectionManager
+									.createNewConnection(message);
+							Log.i(Utils.LOG_IMAGE,
+									"xmpp connection , createNewConnection");
+						} else if (message.getPresence() == null) {
+							message.setStatus(Message.STATUS_WAITING);
+						}
+					} else {
+						mJingleConnectionManager.createNewConnection(message);
+					}
+				} else {
+					message.setPresence("mobile");
+					mJingleConnectionManager.createNewConnection(message);
+					// mJingleConnectionManager.createNewConnection(message);
+					// message.setStatus(Message.STATUS_WAITING);
+				}
+			} else if (message.getType() == Message.TYPE_AUDIO) {
 				if (message.getPresence() != null) {
 					if (message.getEncryption() == Message.ENCRYPTION_OTR) {
 						if (!conv.hasValidOtrSession()
@@ -778,6 +872,7 @@ public class XmppConnectionService extends Service {
 						message.setStatus(Message.STATUS_SEND);
 					}
 					packet = mMessageGenerator.generateChat(message);
+					Log.i("XMPP Packet", "Its likee:" + packet);
 					send = true;
 				}
 			}
@@ -805,13 +900,27 @@ public class XmppConnectionService extends Service {
 
 		}
 		if (saveInDb) {
-			databaseBackend.createMessage(message);
+			try {
+				// if (databaseBackend == null) {
+				this.databaseBackend = DatabaseBackend
+						.getInstance(XmppConnectionService.this);
+				databaseBackend.createMessage(message);
+				// } else {
+				// databaseBackend.createMessage(message);
+				// }
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 		conv.getMessages().add(message);
 		if (convChangedListener != null) {
 			convChangedListener.onConversationListChanged();
 		}
 		if ((send) && (packet != null)) {
+
+			Log.e("file transfer", "Packet Sending" + " with packet" + packet);
 			account.getXmppConnection().sendMessagePacket(packet);
 		}
 
@@ -853,7 +962,10 @@ public class XmppConnectionService extends Service {
 								true);
 					} else if (message.getType() == Message.TYPE_IMAGE) {
 						mJingleConnectionManager.createNewConnection(message);
+					} else if (message.getType() == Message.TYPE_AUDIO) {
+						mJingleConnectionManager.createNewConnection(message);
 					}
+
 				}
 			}
 		} else if (message.getType() == Message.TYPE_TEXT) {
@@ -868,10 +980,13 @@ public class XmppConnectionService extends Service {
 					.getPresences();
 			if ((message.getPresence() != null)
 					&& (presences.has(message.getPresence()))) {
+				Log.i(Utils.LOG_IMAGE, "message presence is not null");
 				markMessage(message, Message.STATUS_OFFERED);
 				mJingleConnectionManager.createNewConnection(message);
+
 			} else {
 				if (presences.size() == 1) {
+					Log.i(Utils.LOG_IMAGE, "message presence is 1");
 					String presence = presences.asStringArray()[0];
 					message.setPresence(presence);
 					markMessage(message, Message.STATUS_OFFERED);
@@ -1054,7 +1169,7 @@ public class XmppConnectionService extends Service {
 
 		conversation = new Conversation(conversationName, account, jid,
 				Conversation.MODE_MULTI);
-		//this.databaseBackend.createConversation(conversation);
+		// this.databaseBackend.createConversation(conversation);
 
 		return conversation;
 	}
@@ -1313,6 +1428,8 @@ public class XmppConnectionService extends Service {
 					}
 				} else if (msg.getType() == Message.TYPE_IMAGE) {
 					mJingleConnectionManager.createNewConnection(msg);
+				} else if (msg.getType() == Message.TYPE_AUDIO) {
+					mJingleConnectionManager.createNewConnection(msg);
 				}
 			}
 		}
@@ -1485,23 +1602,23 @@ public class XmppConnectionService extends Service {
 		}
 
 	}
-	
-	public void inviteToConferenceWithAccount(Account account,Contact contacts , String contactName) {
-	//	for (Contact contact : contacts) {
-			MessagePacket packet = new MessagePacket();
-			//packet.setTo(conversation.getContactJid().split("/")[0]);
-			packet.setTo(contactName);
-			packet.setFrom(account.getFullJid());
-			Element x = new Element("x");
-			x.setAttribute("xmlns", "http://jabber.org/protocol/muc#user");
-			Element invite = new Element("invite");
-			invite.setAttribute("to", contacts.getJid());
-			x.addChild(invite);
-			packet.addChild(x);
-			Log.d(LOGTAG, packet.toString());
-		account.getXmppConnection()
-					.sendMessagePacket(packet);
-		//}
+
+	public void inviteToConferenceWithAccount(Account account,
+			Contact contacts, String contactName) {
+		// for (Contact contact : contacts) {
+		MessagePacket packet = new MessagePacket();
+		// packet.setTo(conversation.getContactJid().split("/")[0]);
+		packet.setTo(contactName);
+		packet.setFrom(account.getFullJid());
+		Element x = new Element("x");
+		x.setAttribute("xmlns", "http://jabber.org/protocol/muc#user");
+		Element invite = new Element("invite");
+		invite.setAttribute("to", contacts.getJid());
+		x.addChild(invite);
+		packet.addChild(x);
+		Log.d(LOGTAG, packet.toString());
+		account.getXmppConnection().sendMessagePacket(packet);
+		// }
 
 	}
 

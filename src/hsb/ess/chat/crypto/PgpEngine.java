@@ -123,6 +123,57 @@ public class PgpEngine {
 				callback.error(R.string.error_decrypting_file, message);
 			}
 
+		}else if (message.getType() == Message.TYPE_AUDIO) {
+			try {
+				final JingleFile inputFile = this.mXmppConnectionService
+						.getFileBackend().getJingleFile(message, false);
+				final JingleFile outputFile = this.mXmppConnectionService
+						.getFileBackend().getJingleFile(message, true);
+				outputFile.createNewFile();
+				InputStream is = new FileInputStream(inputFile);
+				OutputStream os = new FileOutputStream(outputFile);
+				api.executeApiAsync(params, is, os, new IOpenPgpCallback() {
+
+					@Override
+					public void onReturn(Intent result) {
+						switch (result.getIntExtra(OpenPgpApi.RESULT_CODE,
+								OpenPgpApi.RESULT_CODE_ERROR)) {
+						case OpenPgpApi.RESULT_CODE_SUCCESS:
+							BitmapFactory.Options options = new BitmapFactory.Options();
+							options.inJustDecodeBounds = true;
+							BitmapFactory.decodeFile(
+									outputFile.getAbsolutePath(), options);
+							int imageHeight = options.outHeight;
+							int imageWidth = options.outWidth;
+							message.setBody("" + outputFile.getSize() + ","
+									+ imageWidth + "," + imageHeight);
+							message.setEncryption(Message.ENCRYPTION_DECRYPTED);
+							PgpEngine.this.mXmppConnectionService
+									.updateMessage(message);
+							PgpEngine.this.mXmppConnectionService.updateUi(
+									message.getConversation(), false);
+							callback.success(message);
+							return;
+						case OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED:
+							callback.userInputRequried(
+									(PendingIntent) result
+											.getParcelableExtra(OpenPgpApi.RESULT_INTENT),
+									message);
+							return;
+						case OpenPgpApi.RESULT_CODE_ERROR:
+							callback.error(R.string.openpgp_error, message);
+							return;
+						default:
+							return;
+						}
+					}
+				});
+			} catch (FileNotFoundException e) {
+				callback.error(R.string.error_decrypting_file, message);
+			} catch (IOException e) {
+				callback.error(R.string.error_decrypting_file, message);
+			}
+
 		}
 	}
 
@@ -176,6 +227,41 @@ public class PgpEngine {
 				}
 			});
 		} else if (message.getType() == Message.TYPE_IMAGE) {
+			try {
+				JingleFile inputFile = this.mXmppConnectionService
+						.getFileBackend().getJingleFile(message, true);
+				JingleFile outputFile = this.mXmppConnectionService
+						.getFileBackend().getJingleFile(message, false);
+				outputFile.createNewFile();
+				InputStream is = new FileInputStream(inputFile);
+				OutputStream os = new FileOutputStream(outputFile);
+				api.executeApiAsync(params, is, os, new IOpenPgpCallback() {
+
+					@Override
+					public void onReturn(Intent result) {
+						switch (result.getIntExtra(OpenPgpApi.RESULT_CODE,
+								OpenPgpApi.RESULT_CODE_ERROR)) {
+						case OpenPgpApi.RESULT_CODE_SUCCESS:
+							callback.success(message);
+							break;
+						case OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED:
+							callback.userInputRequried(
+									(PendingIntent) result
+											.getParcelableExtra(OpenPgpApi.RESULT_INTENT),
+									message);
+							break;
+						case OpenPgpApi.RESULT_CODE_ERROR:
+							callback.error(R.string.openpgp_error, message);
+							break;
+						}
+					}
+				});
+			} catch (FileNotFoundException e) {
+				Log.d("xmppService", "file not found: " + e.getMessage());
+			} catch (IOException e) {
+				Log.d("xmppService", "io exception during file encrypt");
+			}
+		}else if (message.getType() == Message.TYPE_AUDIO) {
 			try {
 				JingleFile inputFile = this.mXmppConnectionService
 						.getFileBackend().getJingleFile(message, true);

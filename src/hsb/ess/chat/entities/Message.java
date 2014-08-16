@@ -125,7 +125,9 @@ public class Message extends AbstractEntity {
 			return ""+context.getText(R.string.decryption_failed);
 		} else if (type == TYPE_IMAGE) {
 			return ""+context.getText(R.string.image_file);
-		} else {
+		} else if (type== TYPE_AUDIO){
+			return "Audio";
+		}else {
 			return body.trim();
 		}
 	}

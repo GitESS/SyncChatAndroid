@@ -3,6 +3,7 @@ package hsb.ess.chat.xmpp.jingle;
 import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.services.XmppConnectionService;
+import hsb.ess.chat.ui.Utils;
 import hsb.ess.chat.xml.Element;
 import hsb.ess.chat.xmpp.OnIqPacketReceived;
 import hsb.ess.chat.xmpp.jingle.stanzas.JinglePacket;
@@ -31,6 +32,7 @@ public class JingleConnectionManager {
 	}
 
 	public void deliverPacket(Account account, JinglePacket packet) {
+		Log.i(Utils.LOG_IMAGE, "Deliver packet");
 		if (packet.isAction("session-initiate")) {
 			JingleConnection connection = new JingleConnection(this);
 			connection.init(account, packet);
@@ -51,6 +53,8 @@ public class JingleConnectionManager {
 	}
 
 	public JingleConnection createNewConnection(Message message) {
+		Log.i(Utils.LOG_IMAGE,
+				"jingle connection manager, createNewConnection(message)");
 		JingleConnection connection = new JingleConnection(this);
 		connection.init(message);
 		this.connections.add(connection);

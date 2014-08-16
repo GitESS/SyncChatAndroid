@@ -113,7 +113,7 @@ public class ImageProvider extends ContentProvider {
 	
 	public static Uri getContentUri(Message message) {
 		return Uri
-				.parse("content://eu.siacs.conversations.images/"
+				.parse("content://hsb.ess.chat.images/"
 						+ message.getConversationUuid()
 						+ "/"
 						+ message.getUuid()
@@ -121,6 +121,6 @@ public class ImageProvider extends ContentProvider {
 	}
 
 	public static Uri getIncomingContentUri() {
-		return Uri.parse("content://eu.siacs.conversations.images/incoming");
+		return Uri.parse("content://hsb.ess.chat.images/incoming");
 	}
 }

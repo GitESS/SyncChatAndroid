@@ -4,13 +4,21 @@ import hsb.ess.chat.R;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.entities.Message;
 import hsb.ess.chat.services.ImageProvider;
+import hsb.ess.chat.services.XmppConnectionService;
 import hsb.ess.chat.sync.LockScreenActivity;
 import hsb.ess.chat.utils.UIHelper;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -73,6 +81,10 @@ public class ConversationActivity extends XmppActivity {
 	private static final int ATTACHMENT_CHOICE_CHOOSE_IMAGE = 0x92734;
 	private static final int ATTACHMENT_CHOICE_TAKE_PHOTO = 0x84123;
 	private static final int ATTACHMENT_CHOICE_RECORD_VOICE = 0x75291;
+
+	// variable for audio transfer
+	// private static final int ATTACHMENT_CHOICE_AUDIO = 777787;
+
 	private static ConversationActivity instance = null;
 	protected SlidingPaneLayout spl;
 
@@ -213,7 +225,28 @@ public class ConversationActivity extends XmppActivity {
 					if (latestMessage.getStatus() >= Message.STATUS_RECIEVED) {
 						convLastMsg.setVisibility(View.GONE);
 						imagePreview.setVisibility(View.VISIBLE);
-						loadBitmap(latestMessage, imagePreview);
+						// loadBitmap(latestMessage, imagePreview);
+						loadAudio(latestMessage);
+						Log.i(Utils.LOG_IMAGE, "Load Message , getView");
+					} else {
+						convLastMsg.setVisibility(View.VISIBLE);
+						imagePreview.setVisibility(View.GONE);
+						if (latestMessage.getStatus() == Message.STATUS_RECEIVED_OFFER) {
+							convLastMsg
+									.setText(getText(R.string.image_offered_for_download));
+						} else if (latestMessage.getStatus() == Message.STATUS_RECIEVING) {
+							convLastMsg
+									.setText(getText(R.string.receiving_image));
+						} else {
+							convLastMsg.setText("");
+						}
+					}
+				} else if (latestMessage.getType() == Message.TYPE_AUDIO) {
+					if (latestMessage.getStatus() >= Message.STATUS_RECIEVED) {
+						convLastMsg.setVisibility(View.GONE);
+						imagePreview.setVisibility(View.VISIBLE);
+						// loadBitmap(latestMessage, imagePreview);
+						loadAudio(latestMessage);
 					} else {
 						convLastMsg.setVisibility(View.VISIBLE);
 						imagePreview.setVisibility(View.GONE);
@@ -310,6 +343,9 @@ public class ConversationActivity extends XmppActivity {
 
 			}
 		});
+		// Utils.tempxmppConnectionService = xmppConnectionService;
+		// Log.i(Utils.LOG_IMAGE, "temp xmpp connection service oncreate "
+		// +Utils.tempxmppConnectionService);
 	}
 
 	@Override
@@ -387,52 +423,53 @@ public class ConversationActivity extends XmppActivity {
 
 	private void attachFile(final int attachmentChoice) {
 		final Conversation conversation = getSelectedConversation();
-//		if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
-//			if (hasPgp()) {
-//				if (conversation.getContact().getPgpKeyId() != 0) {
-//					xmppConnectionService.getPgpEngine().hasKey(
-//							conversation.getContact(),
-//							new UiCallback<Contact>() {
-//
-//								@Override
-//								public void userInputRequried(PendingIntent pi,
-//										Contact contact) {
-//									ConversationActivity.this.runIntent(pi,
-//											attachmentChoice);
-//								}
-//
-//								@Override
-//								public void success(Contact contact) {
-//									selectPresenceToAttachFile(attachmentChoice);
-//								}
-//
-//								@Override
-//								public void error(int error, Contact contact) {
-//									displayErrorDialog(error);
-//								}
-//							});
-//				} else {
-//					final ConversationFragment fragment = (ConversationFragment) getFragmentManager()
-//							.findFragmentByTag("conversation");
-//					if (fragment != null) {
-//						fragment.showNoPGPKeyDialog(false,
-//								new OnClickListener() {
-//
-//									@Override
-//									public void onClick(DialogInterface dialog,
-//											int which) {
-//										conversation
-//												.setNextEncryption(Message.ENCRYPTION_NONE);
-//										selectPresenceToAttachFile(attachmentChoice);
-//									}
-//								});
-//					}
-//				}
-//			} else {
-//				showInstallPgpDialog();
-//			}
-//		} else
-			if (getSelectedConversation().getNextEncryption() == Message.ENCRYPTION_NONE) {
+		// if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
+		// if (hasPgp()) {
+		// if (conversation.getContact().getPgpKeyId() != 0) {
+		// xmppConnectionService.getPgpEngine().hasKey(
+		// conversation.getContact(),
+		// new UiCallback<Contact>() {
+		//
+		// @Override
+		// public void userInputRequried(PendingIntent pi,
+		// Contact contact) {
+		// ConversationActivity.this.runIntent(pi,
+		// attachmentChoice);
+		// }
+		//
+		// @Override
+		// public void success(Contact contact) {
+		// selectPresenceToAttachFile(attachmentChoice);
+		// }
+		//
+		// @Override
+		// public void error(int error, Contact contact) {
+		// displayErrorDialog(error);
+		// }
+		// });
+		// } else {
+		// final ConversationFragment fragment = (ConversationFragment)
+		// getFragmentManager()
+		// .findFragmentByTag("conversation");
+		// if (fragment != null) {
+		// fragment.showNoPGPKeyDialog(false,
+		// new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(DialogInterface dialog,
+		// int which) {
+		// conversation
+		// .setNextEncryption(Message.ENCRYPTION_NONE);
+		// selectPresenceToAttachFile(attachmentChoice);
+		// }
+		// });
+		// }
+		// }
+		// } else {
+		// showInstallPgpDialog();
+		// }
+		// } else
+		if (getSelectedConversation().getNextEncryption() == Message.ENCRYPTION_NONE) {
 			selectPresenceToAttachFile(attachmentChoice);
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -496,6 +533,63 @@ public class ConversationActivity extends XmppActivity {
 								break;
 							case R.id.attach_record_voice:
 								attachFile(ATTACHMENT_CHOICE_RECORD_VOICE);
+								break;
+
+							case R.id.attach_record_audio:
+
+								// ArrayList<String> sdcardfiles =
+								// GetFiles("/sdcard");
+								// FileTransferManager = new
+								String pathSong = "/sdcard/PiyaMilenge.mp3";
+								Uri uri = Uri.parse(pathSong);
+
+								// Connection connection;
+								// Connection connection =
+								// getSelectedConversation().getAccount().getXmppConnection();
+
+								// FileTransferManager manager = new
+								// FileTransferManager(getSelectedConversation().getAccount().getXmppConnection().);
+								// OutgoingFileTransfer transfer =
+								// manager.createOutgoingFileTransfer(getSelectedConversation().getContactJid());
+								// File file = new File(pathSong);
+								// try {
+								// transfer.sendFile(file, "test_file");
+								// } catch (XMPPException e) {
+								// e.printStackTrace();
+								// }
+								// while(!transfer.isDone()) {
+								// if(transfer.getStatus().equals(Status.error))
+								// {
+								// System.out.println("ERROR!!! " +
+								// transfer.getError());
+								// } else if
+								// (transfer.getStatus().equals(Status.cancelled)
+								// ||
+								// transfer.getStatus().equals(Status.refused))
+								// {
+								// System.out.println("Cancelled!!! " +
+								// transfer.getError());
+								// }
+								// try {
+								// Thread.sleep(1000L);
+								// } catch (InterruptedException e) {
+								// e.printStackTrace();
+								// }
+								// }
+								// if(transfer.getStatus().equals(Status.refused)
+								// || transfer.getStatus().equals(Status.error)
+								// ||
+								// transfer.getStatus().equals(Status.cancelled)){
+								// System.out.println("refused cancelled error "
+								// + transfer.getError());
+								// } else {
+								// System.out.println("Success");
+								// }
+								attachAudioToConversation(
+										getSelectedConversation(), uri , ConversationActivity.getInstance().xmppConnectionService);
+								// attachImageToConversation(
+								// getSelectedConversation(), uri);
+								// attachFile(ATTACHMENT_CHOICE_AUDIO);
 								break;
 							}
 							return false;
@@ -632,6 +726,22 @@ public class ConversationActivity extends XmppActivity {
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public ArrayList<String> GetFiles(String DirectoryPath) {
+		ArrayList<String> MyFiles = new ArrayList<String>();
+		File f = new File(DirectoryPath);
+
+		f.mkdirs();
+		File[] files = f.listFiles();
+		if (files.length == 0)
+			return null;
+		else {
+			for (int i = 0; i < files.length; i++)
+				MyFiles.add(files[i].getName());
+		}
+
+		return MyFiles;
 	}
 
 	private void endConversation(Conversation conversation) {
@@ -824,19 +934,86 @@ public class ConversationActivity extends XmppActivity {
 				attachImageToConversation(getSelectedConversation(), null);
 			} else if (requestCode == REQUEST_RECORD_AUDIO) {
 				Log.d("xmppService", data.getData().toString());
-				attachAudioToConversation(getSelectedConversation(),
-						data.getData());
+//				attachAudioToConversation(getSelectedConversation(),
+//						data.getData());
 			} else {
 				Log.d(LOGTAG, "unknown result code:" + requestCode);
 			}
 		}
 	}
 
-	private void attachAudioToConversation(Conversation conversation, Uri uri) {
+	public void attachAudioToConversation(Conversation conversation, Uri uri ,final XmppConnectionService xmppConnectionService ) {
+		Utils.tempxmppConnectionService = xmppConnectionService;
+
+		Log.i(Utils.LOG_IMAGE, "xmpp connection service "
+				+ xmppConnectionService);
+
+//		if (xmppConnectionService == null) {
+//			// xmppConnectionService = new XmppConnectionService();
+//			final XmppConnectionService xmppConnectionService = new XmppConnectionService();
+//			// xmppConnectionService = Utils.tempxmppConnectionService;
+//			xmppConnectionService.attachAudioToConversation(conversation, uri,
+//					new UiCallback<Message>() {
+//
+//						@Override
+//						public void userInputRequried(PendingIntent pi,
+//								Message object) {
+//							// hidePrepareImageToast();
+//							ConversationActivity.this
+//									.runIntent(
+//											pi,
+//											ConversationActivity.REQUEST_SEND_PGP_IMAGE);
+//						}
+//
+//						@Override
+//						public void success(Message message) {
+//							xmppConnectionService.sendMessage(message);
+//						}
+//
+//						@Override
+//						public void error(int error, Message message) {
+//							// hidePrepareImageToast();
+//							displayErrorDialog(error);
+//						}
+//					});
+//		} else {
+		
+			xmppConnectionService.attachAudioToConversation(
+					conversation, uri, new UiCallback<Message>() {
+
+						@Override
+						public void userInputRequried(PendingIntent pi,
+								Message object) {
+							// hidePrepareImageToast();
+							ConversationActivity.this
+									.runIntent(
+											pi,
+											ConversationActivity.REQUEST_SEND_PGP_IMAGE);
+						}
+
+						@Override
+						public void success(Message message) {
+							xmppConnectionService.sendMessage(message);
+							Log.i(Utils.LOG_IMAGE,
+									"attachImage to Conversatoion  , Audio, Ui callback , success");
+						}
+
+						@Override
+						public void error(int error, Message message) {
+							// hidePrepareImageToast();
+							displayErrorDialog(error);
+							Log.i(Utils.LOG_IMAGE,
+									"attachImage to Conversatoion ,  Audio , Ui callback , error");
+						}
+					});
+	//	}
 
 	}
 
 	private void attachImageToConversation(Conversation conversation, Uri uri) {
+		Log.i(Utils.LOG_IMAGE, "attachImage to Conversaton");
+		Log.i(Utils.LOG_IMAGE, "xmpp connection service "
+				+ xmppConnectionService);
 		prepareImageToast = Toast.makeText(getApplicationContext(),
 				getText(R.string.preparing_image), Toast.LENGTH_LONG);
 		prepareImageToast.show();
@@ -849,16 +1026,22 @@ public class ConversationActivity extends XmppActivity {
 						hidePrepareImageToast();
 						ConversationActivity.this.runIntent(pi,
 								ConversationActivity.REQUEST_SEND_PGP_IMAGE);
+						Log.i(Utils.LOG_IMAGE,
+								"attachImage to Conversaton , uicallback , userinputRequired");
 					}
 
 					@Override
 					public void success(Message message) {
 						xmppConnectionService.sendMessage(message);
+						Log.i(Utils.LOG_IMAGE,
+								"attachImage to Conversatoion , Ui callback , success");
 					}
 
 					@Override
 					public void error(int error, Message message) {
 						hidePrepareImageToast();
+						Log.i(Utils.LOG_IMAGE,
+								"attachImage to Conversaton , uicallback , error");
 						displayErrorDialog(error);
 					}
 				});
@@ -953,6 +1136,29 @@ public class ConversationActivity extends XmppActivity {
 				task.execute(message);
 			}
 		}
+	}
+
+	public void loadAudio(Message message) {
+		// Bitmap bm;
+		try {
+			xmppConnectionService.getFileBackend().getAudio(message,
+					(int) (metrics.density * 288), true);
+		} catch (FileNotFoundException e) {
+			// bm = null;
+		}
+		// if (bm != null) {
+		// imageView.setImageBitmap(bm);
+		// imageView.setBackgroundColor(0x00000000);
+		// } else {
+		// if (cancelPotentialWork(message, imageView)) {
+		// imageView.setBackgroundColor(0xff333333);
+		// final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+		// final AsyncDrawable asyncDrawable = new AsyncDrawable(
+		// getResources(), null, task);
+		// imageView.setImageDrawable(asyncDrawable);
+		// task.execute(message);
+		// }
+		// }
 	}
 
 	public static boolean cancelPotentialWork(Message message,
