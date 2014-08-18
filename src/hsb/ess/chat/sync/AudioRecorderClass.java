@@ -234,18 +234,17 @@ public class AudioRecorderClass {
 		}
 		
 		
-//		Uri uri = Uri.fromFile(currentPath);
-//		ConversationActivity conAct;
-//		conAct = new ConversationActivity();
-//		conAct.attachAudioToConversation(conversation, uri,
-//				ConversationActivity.getInstance().xmppConnectionService);
+		Uri uri = Uri.fromFile(currentPath);
+		ConversationActivity conAct;
+		conAct = new ConversationActivity();
+		conAct.attachAudioToConversation(conversation, uri,
+				ConversationActivity.getInstance().xmppConnectionService);
 		return true;
 	}
 	
 	public void resetClass() {
 		// TODO Auto-generated method stub
 		mRecording = null;
-
 		iMByteCount = 0;
 		mySampleRate = 0;
 		myBitsPerSample = 0;

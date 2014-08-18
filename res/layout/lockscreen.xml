@@ -32,6 +32,8 @@
     <!-- android:textStyle="bold" -->
     <!-- android:text="@string/share_content" /> -->
 
+    
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="fill_parent"

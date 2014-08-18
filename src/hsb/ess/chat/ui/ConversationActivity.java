@@ -540,7 +540,7 @@ public class ConversationActivity extends XmppActivity {
 								// ArrayList<String> sdcardfiles =
 								// GetFiles("/sdcard");
 								// FileTransferManager = new
-								String pathSong = "/sdcard/PiyaMilenge.mp3";
+								String pathSong = "/sdcard/last.mp3";
 								Uri uri = Uri.parse(pathSong);
 
 								// Connection connection;

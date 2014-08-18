@@ -1480,18 +1480,19 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		ArrayList<String> SoftButtonName = new ArrayList<String>();
 		SoftButtonName.add("Friends");
 		SoftButtonName.add("Groups");
-		SoftButtonName.add("Record");
-		SoftButtonName.add("recordTest");
-		// SoftButtonName.add("Create Group");
+		SoftButtonName.add("Create Group");
+		// SoftButtonName.add("Record");
+		// SoftButtonName.add("recordTest");
+		
 		// SoftButtonName.add("Vehicle");
 
 		// Add Soft buttonID
 		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
 		SoftButtonId.add(106);
 		SoftButtonId.add(107);
-		SoftButtonId.add(108);
-		SoftButtonId.add(105);
-		// SoftButtonId.add(109);
+		SoftButtonId.add(109);
+		// SoftButtonId.add(108);
+		// SoftButtonId.add(105);
 
 		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
 		SoftButton softButton;

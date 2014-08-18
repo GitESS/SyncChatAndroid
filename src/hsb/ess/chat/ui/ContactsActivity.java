@@ -415,14 +415,20 @@ public class ContactsActivity extends XmppActivity {
 		// .getRNG());
 		String mucName = randomStringGen();
 		String serverName = account.getXmppConnection().getMucServer();
+		 if (serverName == null) {
+		 List<String> servers = getMucServers();
+		 if (servers.size() >= 1) {
+		 serverName = servers.get(0);
+		 } else {
+		 displayErrorDialog(R.string.no_muc_server_found);
+		 return;
+		 }
+		 }
+
 		if (serverName == null) {
-			List<String> servers = getMucServers();
-			if (servers.size() >= 1) {
-				serverName = servers.get(0);
-			} else {
-				displayErrorDialog(R.string.no_muc_server_found);
-				return;
-			}
+			Log.i("hemant", "severname is null");
+		} else {
+			Log.i("hemant", "severname is not null");
 		}
 		String jid = mucName + "@" + serverName;
 		setMucName(jid);
@@ -473,13 +479,15 @@ public class ContactsActivity extends XmppActivity {
 	 * Sends invitation to the selected Contact
 	 * 
 	 * */
-	public void inviteToGroupFromService(Account account,
-			Contact contacts , String contactName) {
-		xmppConnectionService.inviteToConferenceWithAccount(account, contacts, contactName);
-		
-//		List<Contact> contactselected = new ArrayList<Contact>();
-//		contactselected.add(contact);
-//		xmppConnectionService.inviteToConference(conversation, contactselected);
+	public void inviteToGroupFromService(Account account, Contact contacts,
+			String contactName) {
+		xmppConnectionService.inviteToConferenceWithAccount(account, contacts,
+				contactName);
+
+		// List<Contact> contactselected = new ArrayList<Contact>();
+		// contactselected.add(contact);
+		// xmppConnectionService.inviteToConference(conversation,
+		// contactselected);
 	}
 
 	protected void updateAggregatedContacts() {
@@ -723,14 +731,27 @@ public class ContactsActivity extends XmppActivity {
 
 	private List<String> getMucServers() {
 		ArrayList<String> mucServers = new ArrayList<String>();
-		for (Account account : accounts) {
-			if (account.getXmppConnection() != null) {
-				String server = account.getXmppConnection().getMucServer();
-				if (server != null) {
-					mucServers.add(server);
+		if (accounts == null) {
+			List<Account> tempAccountList = new ArrayList<Account>();
+
+			tempAccountList = Utils.tempxmppConnectionService.getAccounts();
+
+			Account tempaccount = tempAccountList.get(0);
+			String server = tempaccount.getXmppConnection().getMucServer();
+			if (server != null) {
+				mucServers.add(server);
+			}
+		} else {
+			for (Account account : accounts) {
+				if (account.getXmppConnection() != null) {
+					String server = account.getXmppConnection().getMucServer();
+					if (server != null) {
+						mucServers.add(server);
+					}
 				}
 			}
 		}
+
 		return mucServers;
 	}
 

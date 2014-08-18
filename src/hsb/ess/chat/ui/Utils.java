@@ -7,10 +7,10 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 
 public class Utils {
-	public static final String HOST_DATA ="192.168.1.73"; 
+	//public static final String HOST_DATA ="192.168.1.73"; 
 	
 	//132.132.2.234//Local
-	//public static final String HOST_DATA = "jabber.ru.com";
+	public static final String HOST_DATA = "jabber.ru.com";
 	//	public static final String HOST_DATA ="182.73.73.181";  //Public
 //	public static final String HOST_DATA ="132.132.2.234";   //MAC
 	
