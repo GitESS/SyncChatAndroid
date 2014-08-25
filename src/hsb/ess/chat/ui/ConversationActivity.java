@@ -525,72 +525,22 @@ public class ConversationActivity extends XmppActivity {
 						@Override
 						public boolean onMenuItemClick(MenuItem item) {
 							switch (item.getItemId()) {
-							case R.id.attach_choose_picture:
-								attachFile(ATTACHMENT_CHOICE_CHOOSE_IMAGE);
-								break;
-							case R.id.attach_take_picture:
-								attachFile(ATTACHMENT_CHOICE_TAKE_PHOTO);
-								break;
+//							case R.id.attach_choose_picture:
+//								attachFile(ATTACHMENT_CHOICE_CHOOSE_IMAGE);
+//								break;
+//							case R.id.attach_take_picture:
+//								attachFile(ATTACHMENT_CHOICE_TAKE_PHOTO);
+//								break;
 							case R.id.attach_record_voice:
 								attachFile(ATTACHMENT_CHOICE_RECORD_VOICE);
 								break;
 
-							case R.id.attach_record_audio:
-
-								// ArrayList<String> sdcardfiles =
-								// GetFiles("/sdcard");
-								// FileTransferManager = new
-								String pathSong = "/sdcard/last.mp3";
-								Uri uri = Uri.parse(pathSong);
-
-								// Connection connection;
-								// Connection connection =
-								// getSelectedConversation().getAccount().getXmppConnection();
-
-								// FileTransferManager manager = new
-								// FileTransferManager(getSelectedConversation().getAccount().getXmppConnection().);
-								// OutgoingFileTransfer transfer =
-								// manager.createOutgoingFileTransfer(getSelectedConversation().getContactJid());
-								// File file = new File(pathSong);
-								// try {
-								// transfer.sendFile(file, "test_file");
-								// } catch (XMPPException e) {
-								// e.printStackTrace();
-								// }
-								// while(!transfer.isDone()) {
-								// if(transfer.getStatus().equals(Status.error))
-								// {
-								// System.out.println("ERROR!!! " +
-								// transfer.getError());
-								// } else if
-								// (transfer.getStatus().equals(Status.cancelled)
-								// ||
-								// transfer.getStatus().equals(Status.refused))
-								// {
-								// System.out.println("Cancelled!!! " +
-								// transfer.getError());
-								// }
-								// try {
-								// Thread.sleep(1000L);
-								// } catch (InterruptedException e) {
-								// e.printStackTrace();
-								// }
-								// }
-								// if(transfer.getStatus().equals(Status.refused)
-								// || transfer.getStatus().equals(Status.error)
-								// ||
-								// transfer.getStatus().equals(Status.cancelled)){
-								// System.out.println("refused cancelled error "
-								// + transfer.getError());
-								// } else {
-								// System.out.println("Success");
-								// }
-								attachAudioToConversation(
-										getSelectedConversation(), uri , ConversationActivity.getInstance().xmppConnectionService);
-								// attachImageToConversation(
-								// getSelectedConversation(), uri);
-								// attachFile(ATTACHMENT_CHOICE_AUDIO);
-								break;
+//							case R.id.attach_record_audio:
+//								String pathSong = "/sdcard/last.mp3";
+//								Uri uri = Uri.parse(pathSong);						
+//								attachAudioToConversation(
+//										getSelectedConversation(), uri , ConversationActivity.getInstance().xmppConnectionService);
+//								break;
 							}
 							return false;
 						}

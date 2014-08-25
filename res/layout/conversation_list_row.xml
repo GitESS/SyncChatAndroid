@@ -52,7 +52,8 @@
 	        android:id="@+id/conversation_lastimage"
 	        android:layout_width="20dp"
 	        android:layout_height="20dp"
-	        android:background="#333333"
+	        
+	        android:background="@drawable/ic_action_device_access_volume_on"
 	        android:scaleType="centerCrop" />
 
 	</LinearLayout>

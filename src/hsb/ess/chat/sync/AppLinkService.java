@@ -1,7 +1,7 @@
-/**Ford Motor Company
- * September 2012
- * Elizabeth Halash
- */
+/**
+ * @author Hemant
+ * 
+ * */
 
 package hsb.ess.chat.sync;
 
@@ -649,13 +649,8 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 							new Runnable() {
 								@Override
 								public void run() {
-									// Conversation conver = contactActivity
-									// .createConversationGroup(con,
-									// contactActivity
-									// .getMucName());
 									contactActivity.inviteToGroupFromService(
-											con, tempContact, "raj");
-
+											con, tempContact, conCONTACT_JID);
 								}
 
 							});
@@ -663,28 +658,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 			}
 
 		}
-		// switch (response.getChoiceID()) {
-		// case CHOICE_FRUIT:
-		// Log.e(TAG, "onPerformInteractionResponse fruit clicked ");
-		// // sendPickedChoice("fruit");
-		// break;
-		// case CHOICE_APPLE:
-		// Log.e(TAG, "onPerformInteractionResponse Apple clicked ");
-		// // sendPickedChoice("apple");
-		// break;
-		// case CHOICE_PEAR:
-		// Log.e(TAG, "onPerformInteractionResponse pear clicked ");
-		// // sendPickedChoice("pear");
-		// break;
-		// case CHOICE_PEACH:
-		// Log.e(TAG, "onPerformInteractionResponse  peach clicked ");
-		// // Log.e(TAG, "onPerformInteractionResponse fruit clicked ");
-		//
-		// // sendPickedChoice("peach");
-		// break;
-		// }
 
-		// SetAlert("Message Sent", 3000, "Message Sent");
 	}
 
 	@Override
@@ -1483,7 +1457,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		SoftButtonName.add("Create Group");
 		// SoftButtonName.add("Record");
 		// SoftButtonName.add("recordTest");
-		
+
 		// SoftButtonName.add("Vehicle");
 
 		// Add Soft buttonID
@@ -1638,15 +1612,14 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		// Add Soft button name
 		ArrayList<String> SoftButtonName = new ArrayList<String>();
 		SoftButtonName.add("Send");
-
 		SoftButtonName.add("Back");
-
-		// SoftButtonName.add("Vehicle");
+		SoftButtonName.add("Add Friend");
 
 		// Add Soft buttonID
 		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
 		SoftButtonId.add(111);
 		SoftButtonId.add(112);
+		SoftButtonId.add(131);
 
 		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
 		SoftButton softButton;

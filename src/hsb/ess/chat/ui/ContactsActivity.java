@@ -410,9 +410,6 @@ public class ContactsActivity extends XmppActivity {
 	 * */
 	public void startConferenceFromService(final Account account) {
 		Conversation conversation;
-		// if (isOnline(account)) {
-		// String mucName = CryptoHelper.randomMucName(xmppConnectionService
-		// .getRNG());
 		String mucName = randomStringGen();
 		String serverName = account.getXmppConnection().getMucServer();
 		 if (serverName == null) {
@@ -420,7 +417,7 @@ public class ContactsActivity extends XmppActivity {
 		 if (servers.size() >= 1) {
 		 serverName = servers.get(0);
 		 } else {
-		 displayErrorDialog(R.string.no_muc_server_found);
+		 //displayErrorDialog(R.string.no_muc_server_found);
 		 return;
 		 }
 		 }
@@ -439,7 +436,7 @@ public class ContactsActivity extends XmppActivity {
 					.createNewConversation(account, jid, true);
 		} else {
 			xmppConnectionService = new XmppConnectionService();
-			conversation = ContactsActivity.this.xmppConnectionService
+			conversation = Utils.tempxmppConnectionService
 					.createNewConversation(account, jid, true);
 		}
 		StringBuilder subject = new StringBuilder();
@@ -453,15 +450,6 @@ public class ContactsActivity extends XmppActivity {
 		}
 		xmppConnectionService.sendConversationSubject(conversation,
 				subject.toString());
-		// xmppConnectionService
-		// .sendConversationSubject(conversation, mucName);
-		/*
-		 * xmppConnectionService.inviteToConference(conversation,
-		 * selectedContacts);
-		 */
-		// switchToConversation(conversation, null, false);
-
-		// }
 
 	}
 
@@ -479,10 +467,10 @@ public class ContactsActivity extends XmppActivity {
 	 * Sends invitation to the selected Contact
 	 * 
 	 * */
-	public void inviteToGroupFromService(Account account, Contact contacts,
-			String contactName) {
-		xmppConnectionService.inviteToConferenceWithAccount(account, contacts,
-				contactName);
+	public void inviteToGroupFromService(Account account, Contact contacts , String SENDERJID
+			) {
+		Utils.tempxmppConnectionService.inviteToConferenceWithAccount(account, contacts,
+				SENDERJID);
 
 		// List<Contact> contactselected = new ArrayList<Contact>();
 		// contactselected.add(contact);
