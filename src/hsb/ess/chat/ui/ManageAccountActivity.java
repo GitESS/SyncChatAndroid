@@ -29,7 +29,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.ford.syncV4.proxy.SyncProxyALM;
@@ -42,6 +45,9 @@ public class ManageAccountActivity extends XmppActivity {
 	protected ManageAccountActivity activity = this;
 	public boolean isMyAccountIsOnline = false;
 	private static ManageAccountActivity instance = null;
+
+	public Switch mDoNotDisturbSwitch;
+	private boolean isDoNotDisturbedClicked;
 
 	public boolean isMyAccountIsOnline() {
 		return isMyAccountIsOnline;
@@ -91,39 +97,6 @@ public class ManageAccountActivity extends XmppActivity {
 					Log.i("fingerprint", fingerprint);
 					account.setSSLCertFingerprint(fingerprint);
 					activity.xmppConnectionService.updateAccount(account);
-					// activity.xmppConnectionService.reconnectAccount(account,
-					// true);
-					// AlertDialog.Builder builder = new
-					// AlertDialog.Builder(activity);
-					// builder.setTitle(getString(R.string.account_status_error));
-					// builder.setIconAttribute(android.R.attr.alertDialogIcon);
-					// View view = (View)
-					// getLayoutInflater().inflate(R.layout.cert_warning, null);
-					// TextView sha = (TextView) view.findViewById(R.id.sha);
-					// TextView hint = (TextView) view.findViewById(R.id.hint);
-					// StringBuilder humanReadableSha = new StringBuilder();
-					// humanReadableSha.append(fingerprint);
-					// for(int i = 2; i < 59; i += 3) {
-					// if ((i==14)||(i==29)||(i==44)) {
-					// humanReadableSha.insert(i, "\n");
-					// } else {
-					// humanReadableSha.insert(i, ":");
-					// }
-					//
-					// }
-					// hint.setText(getString(R.string.untrusted_cert_hint,account.getServer()));
-					// sha.setText(humanReadableSha.toString());
-					// builder.setView(view);
-					// builder.setNegativeButton(getString(R.string.certif_no_trust),
-					// null);
-					// builder.setPositiveButton(getString(R.string.certif_trust),
-					// new OnClickListener() {
-					//
-					// @Override
-					// public void onClick(DialogInterface dialog, int which) {
-					// account.setSSLCertFingerprint(fingerprint);
-					// activity.xmppConnectionService.updateAccount(account);
-					// }
 
 				}
 			});
@@ -143,8 +116,11 @@ public class ManageAccountActivity extends XmppActivity {
 
 		setContentView(R.layout.manage_accounts);
 		instance = this;
+		mDoNotDisturbSwitch = (Switch) findViewById(R.id.switch_donotdisturb);
+
 		boolean finish = getIntent().getBooleanExtra("finish", false);
 		Bundle b = getIntent().getExtras();
+
 		Log.i("hemant", "Bundle" + b);
 		if (b != null) {
 			Log.i("hemant", "Bundle not null" + b.getString("ServiceIntent"));
@@ -281,6 +257,10 @@ public class ManageAccountActivity extends XmppActivity {
 					break;
 				}
 
+				if (isDoNotDisturbedClicked) {
+
+					statusView.setText("Do Not Disturb ");
+				}
 				return view;
 			}
 		};
@@ -292,17 +272,20 @@ public class ManageAccountActivity extends XmppActivity {
 			public void onItemClick(AdapterView<?> arg0, View view,
 					int position, long arg3) {
 				if (!isActionMode) {
-					Account account = accountList.get(position);
-					if ((account.getStatus() == Account.STATUS_OFFLINE)
-							|| (account.getStatus() == Account.STATUS_TLS_ERROR)) {
-						activity.xmppConnectionService.reconnectAccount(
-								accountList.get(position), true);
-					} else if (account.getStatus() == Account.STATUS_ONLINE) {
-						activity.startActivity(new Intent(activity
-								.getApplicationContext(),
-								ContactsActivity.class));
-					} else if (account.getStatus() != Account.STATUS_DISABLED) {
-						editAccount(account);
+					if (!isDoNotDisturbedClicked) {
+
+						Account account = accountList.get(position);
+						if ((account.getStatus() == Account.STATUS_OFFLINE)
+								|| (account.getStatus() == Account.STATUS_TLS_ERROR)) {
+							activity.xmppConnectionService.reconnectAccount(
+									accountList.get(position), true);
+						} else if (account.getStatus() == Account.STATUS_ONLINE) {
+							activity.startActivity(new Intent(activity
+									.getApplicationContext(),
+									ContactsActivity.class));
+						} else if (account.getStatus() != Account.STATUS_DISABLED) {
+							// editAccount(account);
+						}
 					}
 				} else {
 					selectedAccountForActionMode = accountList.get(position);
@@ -310,6 +293,32 @@ public class ManageAccountActivity extends XmppActivity {
 				}
 			}
 		});
+
+		mDoNotDisturbSwitch
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						Log.i("Hemant", "Boolen" + isChecked);
+						Account account = accountList.get(0);
+						if (isChecked) {
+							// Account account= accountList.get(0);
+
+							isDoNotDisturbedClicked = true;
+							// account.setStatus(Account.STATUS_OFFLINE);
+							// setMyAccountIsOnline(false);
+							xmppConnectionService.disconnect(account, true);
+							// return;
+						} else {
+
+							// accountListView.invalidate();
+							xmppConnectionService.disconnect(account, false);
+							isDoNotDisturbedClicked = false;
+						}
+						accountListView.invalidate();
+					}
+				});
 		accountListView
 				.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -369,202 +378,7 @@ public class ManageAccountActivity extends XmppActivity {
 										public boolean onActionItemClicked(
 												final ActionMode mode,
 												MenuItem item) {
-											// if (item.getItemId() ==
-											// R.id.mgmt_account_edit) {
-											// editAccount(selectedAccountForActionMode);
-											// } else if (item.getItemId() ==
-											// R.id.mgmt_account_disable) {
-											// selectedAccountForActionMode
-											// .setOption(
-											// Account.OPTION_DISABLED,
-											// true);
-											// xmppConnectionService
-											// .updateAccount(selectedAccountForActionMode);
-											// mode.finish();
-											// } else if (item.getItemId() ==
-											// R.id.mgmt_account_enable) {
-											// selectedAccountForActionMode
-											// .setOption(
-											// Account.OPTION_DISABLED,
-											// false);
-											// xmppConnectionService
-											// .updateAccount(selectedAccountForActionMode);
-											// mode.finish();
-											// } else if (item.getItemId() ==
-											// R.id.mgmt_account_delete) {
-											// AlertDialog.Builder builder = new
-											// AlertDialog.Builder(
-											// activity);
-											// builder.setTitle(getString(R.string.mgmt_account_are_you_sure));
-											// builder.setIconAttribute(android.R.attr.alertDialogIcon);
-											// builder.setMessage(getString(R.string.mgmt_account_delete_confirm_text));
-											// builder.setPositiveButton(
-											// getString(R.string.delete),
-											// new OnClickListener() {
-											//
-											// @Override
-											// public void onClick(
-											// DialogInterface dialog,
-											// int which) {
-											// xmppConnectionService
-											// .deleteAccount(selectedAccountForActionMode);
-											// selectedAccountForActionMode =
-											// null;
-											// mode.finish();
-											// }
-											// });
-											// builder.setNegativeButton(
-											// getString(R.string.cancel),
-											// null);
-											// builder.create().show();
-											// } else if (item.getItemId() ==
-											// R.id.mgmt_account_announce_pgp) {
-											// if (activity.hasPgp()) {
-											// mode.finish();
-											// announcePgp(
-											// selectedAccountForActionMode,
-											// null);
-											// } else {
-											// activity.showInstallPgpDialog();
-											// }
-											// } else if (item.getItemId() ==
-											// R.id.mgmt_otr_key) {
-											// AlertDialog.Builder builder = new
-											// AlertDialog.Builder(
-											// activity);
-											// builder.setTitle("OTR Fingerprint");
-											// String fingerprintTxt =
-											// selectedAccountForActionMode
-											// .getOtrFingerprint(getApplicationContext());
-											// View view = (View)
-											// getLayoutInflater()
-											// .inflate(
-											// R.layout.otr_fingerprint,
-											// null);
-											// if (fingerprintTxt != null) {
-											// TextView fingerprint = (TextView)
-											// view
-											// .findViewById(R.id.otr_fingerprint);
-											// TextView noFingerprintView =
-											// (TextView) view
-											// .findViewById(R.id.otr_no_fingerprint);
-											// fingerprint
-											// .setText(fingerprintTxt);
-											// fingerprint
-											// .setVisibility(View.VISIBLE);
-											// noFingerprintView
-											// .setVisibility(View.GONE);
-											// }
-											// builder.setView(view);
-											// builder.setPositiveButton(
-											// getString(R.string.done),
-											// null);
-											// builder.create().show();
-											// } else if (item.getItemId() ==
-											// R.id.mgmt_account_info) {
-											// AlertDialog.Builder builder = new
-											// AlertDialog.Builder(
-											// activity);
-											// builder.setTitle(getString(R.string.account_info));
-											// if (selectedAccountForActionMode
-											// .getStatus() ==
-											// Account.STATUS_ONLINE) {
-											// XmppConnection xmpp =
-											// selectedAccountForActionMode
-											// .getXmppConnection();
-											// long connectionAge = (SystemClock
-											// .elapsedRealtime() -
-											// xmpp.lastConnect) / 60000;
-											// long sessionAge = (SystemClock
-											// .elapsedRealtime() -
-											// xmpp.lastSessionStarted) / 60000;
-											// long connectionAgeHours =
-											// connectionAge / 60;
-											// long sessionAgeHours = sessionAge
-											// / 60;
-											// View view = (View)
-											// getLayoutInflater()
-											// .inflate(
-											// R.layout.server_info,
-											// null);
-											// TextView connection = (TextView)
-											// view
-											// .findViewById(R.id.connection);
-											// TextView session = (TextView)
-											// view
-											// .findViewById(R.id.session);
-											// TextView pcks_sent = (TextView)
-											// view
-											// .findViewById(R.id.pcks_sent);
-											// TextView pcks_received =
-											// (TextView) view
-											// .findViewById(R.id.pcks_received);
-											// TextView carbon = (TextView) view
-											// .findViewById(R.id.carbon);
-											// TextView stream = (TextView) view
-											// .findViewById(R.id.stream);
-											// TextView roster = (TextView) view
-											// .findViewById(R.id.roster);
-											// TextView presences = (TextView)
-											// view
-											// .findViewById(R.id.number_presences);
-											// presences.setText(selectedAccountForActionMode
-											// .countPresences()
-											// + "");
-											// pcks_received.setText(""
-											// + xmpp.getReceivedStanzas());
-											// pcks_sent.setText(""
-											// + xmpp.getSentStanzas());
-											// if (connectionAgeHours >= 2) {
-											// connection
-											// .setText(connectionAgeHours
-											// + " "
-											// + getString(R.string.hours));
-											// } else {
-											// connection
-											// .setText(connectionAge
-											// + " "
-											// + getString(R.string.mins));
-											// }
-											// if
-											// (xmpp.hasFeatureStreamManagment())
-											// {
-											// if (sessionAgeHours >= 2) {
-											// session.setText(sessionAgeHours
-											// + " "
-											// + getString(R.string.hours));
-											// } else {
-											// session.setText(sessionAge
-											// + " "
-											// + getString(R.string.mins));
-											// }
-											// stream.setText(getString(R.string.yes));
-											// } else {
-											// stream.setText(getString(R.string.no));
-											// session.setText(connection
-											// .getText());
-											// }
-											// if (xmpp.hasFeaturesCarbon()) {
-											// carbon.setText(getString(R.string.yes));
-											// } else {
-											// carbon.setText(getString(R.string.no));
-											// }
-											// if
-											// (xmpp.hasFeatureRosterManagment())
-											// {
-											// roster.setText(getString(R.string.yes));
-											// } else {
-											// roster.setText(getString(R.string.no));
-											// }
-											// builder.setView(view);
-											// } else {
-											// builder.setMessage(getString(R.string.mgmt_account_account_offline));
-											// }
-											// builder.setPositiveButton(
-											// getString(R.string.hide),
-											// null);
-											// builder.create().show();
-											// }
+
 											return true;
 										}
 
@@ -780,4 +594,5 @@ public class ManageAccountActivity extends XmppActivity {
 			FromServerice = bs.getString("ServiceIntent");
 		}
 	}
+
 }

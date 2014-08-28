@@ -25,6 +25,14 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
+/**
+ * @author Hemant Bisht
+ *
+ *
+ * @Project_Name @SyncChatDev
+ * @File_Name @AudioRecorderClass.java
+ * @Created_on @Aug 27, 2014
+* */
 public class AudioRecorderClass {
 	private static AudioRecorderClass mRecording = null;
 	private static final String STR_FILE_PCM = "app_audio.pcm";

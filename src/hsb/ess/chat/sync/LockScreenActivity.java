@@ -1,7 +1,4 @@
-/**Ford Motor Company
- * September 2012
- * Elizabeth Halash
- */
+
 
 package hsb.ess.chat.sync;
 
@@ -15,6 +12,14 @@ import android.widget.Button;
 
 import com.ford.syncV4.proxy.SyncProxyALM;
 
+/**
+ * @author Hemant Bisht
+ *
+ *
+ * @Project_Name @SyncChatDev
+ * @File_Name @LockScreenActivity.java
+ * @Created_on @Aug 27, 2014
+* */
 public class LockScreenActivity extends Activity {
 	int itemcmdID = 0;
 	int subMenuId = 0;
