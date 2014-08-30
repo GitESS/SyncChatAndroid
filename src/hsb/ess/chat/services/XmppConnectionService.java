@@ -1,5 +1,6 @@
 package hsb.ess.chat.services;
 
+import hsb.ess.chat.R;
 import hsb.ess.chat.crypto.PgpEngine;
 import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Contact;
@@ -219,9 +220,8 @@ public class XmppConnectionService extends Service {
 					// conversationuuid.getContactJid();
 					// Contact contact = conversationuuid.getContact();
 					// = contact.getDisplayName();
-					if (body.equalsIgnoreCase("Send From Sync")) {
-
-					} else {
+					if (!body.equalsIgnoreCase(getResources().getString(
+							R.string.message_from_tdk))) {
 
 						try {
 							if (AppLinkService.getInstance()

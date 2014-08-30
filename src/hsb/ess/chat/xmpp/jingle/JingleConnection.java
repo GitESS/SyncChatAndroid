@@ -242,15 +242,13 @@ public class JingleConnection {
 												+ ".  ", contactName,
 										contactJid, Conversation.MODE_SINGLE);
 						Thread.sleep(2000);
-						AppLinkService serviceInstance = AppLinkService
-								.getInstance();
-						if (serviceInstance != null) {
-							SyncProxyALM proxyInstance = serviceInstance
-									.getProxy();
-							if (proxyInstance != null) {
-								playNewMessage(filePath);
-							}
+						if (AppLinkService.getInstance().isSyncConnectedToChat) {
+							Log.i("notifiChat",
+									"proxy instance is not null so playing");
+							playNewMessage(filePath);
 						}
+						Log.i("notifiChat",
+								"proxy instance is null so no playing");
 
 						// if(AppLinkService.getInstance().getProxy()
 

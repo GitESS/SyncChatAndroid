@@ -14,12 +14,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
-import org.jivesoftware.smackx.filetransfer.FileTransferManager;
-import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
-
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
@@ -413,9 +407,18 @@ public class ConversationActivity extends XmppActivity {
 							getString(R.string.attach_file));
 					startActivityForResult(chooser, REQUEST_ATTACH_FILE_DIALOG);
 				} else if (attachmentChoice == ATTACHMENT_CHOICE_RECORD_VOICE) {
-					Intent intent = new Intent(
-							MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-					startActivityForResult(intent, REQUEST_RECORD_AUDIO);
+					
+					
+//					Intent intent = new Intent(
+//							MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+//					startActivityForResult(intent, REQUEST_RECORD_AUDIO);	
+			
+			
+			String pathSong = "/sdcard/last.mp3";
+			Uri uri = Uri.parse(pathSong);
+		
+
+			attachAudioToConversation(getSelectedConversation(), uri, xmppConnectionService);
 				}
 			}
 		});

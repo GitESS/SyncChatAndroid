@@ -244,5 +244,6 @@
     <string name="never_seen">never seen</string>
     <string name="install_openkeychain">Encrypted message. Please install OpenKeychain to decrypt.</string>
     <string name="no_muc_server_found">No suitable Conference Server found</string>
+    <string name="message_from_tdk">i am drving , will call you later.</string>
 
 </resources>

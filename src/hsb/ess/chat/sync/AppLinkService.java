@@ -1,5 +1,6 @@
 package hsb.ess.chat.sync;
 
+import hsb.ess.chat.R;
 import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
@@ -121,6 +122,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 	private boolean lockscreenUP = false;
 	ManageAccountActivity manageA;
 
+	public boolean isSyncConnectedToChat = false;
 	// variable that keeps track if Friend or Group is Clicked
 	// private boolean isFriendIsClicked = false;
 	private int VRCommandSelected = 0;
@@ -320,7 +322,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 				subButtons();
 				showSoftButtonsOnScreen();
 				initializeVoiceCommand();
-				performInterac();
+				refreshOnlineFriendsAndGroup();
 
 				createVRForContactList();
 				try {
@@ -352,7 +354,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 						}
 					}
 				});
-
+				isSyncConnectedToChat = true;
 			} else {
 
 			}
@@ -378,6 +380,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 			Log.i("hello", "HMI_NONE");
 			driverdistrationNotif = false;
 			clearlockscreen();
+			isSyncConnectedToChat = false;
 			break;
 		default:
 			return;
@@ -450,18 +453,25 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 			performInteraction();
 
 			VRCommandSelected = vrFriend;
+			refreshOnlineFriendsAndGroup();
 			break;
 
 		case ONLINE_GROUPS_CMDID:
 			performInteractionGroup();
 
 			VRCommandSelected = vrGroup;
+			refreshOnlineFriendsAndGroup();
 			break;
 
 		case VR_SEND_MESSAGE_ID:
 			sendRecorderMessage();
 
 			break;
+
+		// case VR_SEND_MESSAGE_ID:
+		// sendRecorderMessage();
+		//
+		// break;
 		default:
 			break;
 
@@ -654,11 +664,13 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 			// isFriendIsClicked = true;
 			VRCommandSelected = vrFriend;
+			refreshOnlineFriendsAndGroup();
 			break;
 		case 107:
 			performInteractionGroup();
 			VRCommandSelected = vrGroup;
 			// isFriendIsClicked = false;
+			refreshOnlineFriendsAndGroup();
 			break;
 
 		case 109:
@@ -1018,7 +1030,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 	}
 
-	public void performInterac() {
+	public void refreshOnlineFriendsAndGroup() {
 		Log.i("ApplinkService", "In PerformInterac");
 
 		Vector<Choice> commands = new Vector<Choice>();
@@ -1277,13 +1289,13 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 		isConversationSelected = false;
 		// Add Soft button name
 		ArrayList<String> SoftButtonName = new ArrayList<String>();
-		SoftButtonName.add("Add Friend");
+		// SoftButtonName.add("Add Friend");
 		SoftButtonName.add("Back");
 		// SoftButtonName.add("Vehicle");
 
 		// Add Soft buttonID
 		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
-		SoftButtonId.add(131);
+		// SoftButtonId.add(131);
 		SoftButtonId.add(112);
 
 		Vector<SoftButton> vsoftButton = new Vector<SoftButton>();
@@ -1395,7 +1407,7 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 
 		// Add Soft buttonID
 		ArrayList<Integer> SoftButtonId = new ArrayList<Integer>();
-		SoftButtonId.add(111);
+		SoftButtonId.add(121);
 		SoftButtonId.add(112);
 		SoftButtonId.add(131);
 
@@ -1432,10 +1444,11 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 	 * */
 	private void sendMessage(String name, Account con, String contactJid,
 			int mode) {
+
 		Conversation conver = new Conversation(name, con, contactJid, mode);
 		ManageAccountActivity.getInstance().xmppConnectionService
-				.sendMessage(new Message(conver, "Send From Sync",
-						Message.ENCRYPTION_NONE));
+				.sendMessage(new Message(conver, getResources().getString(
+						R.string.message_from_tdk), Message.ENCRYPTION_NONE));
 		try {
 			proxy.alert("Message Sent", "", false, 2000, autoIncCorrId++);
 		} catch (Exception e) {
@@ -1543,6 +1556,14 @@ public class AppLinkService extends Service implements IProxyListenerALM {
 				e.printStackTrace();
 			}
 			// sendRecordedMessage();
+		}
+	}
+
+	public void showAlert(String message) {
+		try {
+			proxy.alert(message, true, autoIncCorrId++);
+		} catch (SyncException e) {
+			e.printStackTrace();
 		}
 	}
 }

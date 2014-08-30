@@ -5,6 +5,7 @@ import hsb.ess.chat.entities.Account;
 import hsb.ess.chat.entities.Contact;
 import hsb.ess.chat.entities.Conversation;
 import hsb.ess.chat.services.XmppConnectionService;
+import hsb.ess.chat.sync.AppLinkService;
 import hsb.ess.chat.utils.CryptoHelper;
 import hsb.ess.chat.utils.UIHelper;
 import hsb.ess.chat.utils.Validator;
@@ -412,18 +413,21 @@ public class ContactsActivity extends XmppActivity {
 		Conversation conversation;
 		String mucName = randomStringGen();
 		String serverName = account.getXmppConnection().getMucServer();
-		 if (serverName == null) {
-		 List<String> servers = getMucServers();
-		 if (servers.size() >= 1) {
-		 serverName = servers.get(0);
-		 } else {
-		 //displayErrorDialog(R.string.no_muc_server_found);
-		 return;
-		 }
-		 }
+		if (serverName == null) {
+			List<String> servers = getMucServers();
+			if (servers.size() >= 1) {
+				serverName = servers.get(0);
+			} else {
+				AppLinkService.getInstance().showAlert(
+						"Server is Busy, Try later");
+
+				return;
+			}
+		}
 
 		if (serverName == null) {
 			Log.i("hemant", "severname is null");
+
 		} else {
 			Log.i("hemant", "severname is not null");
 		}
@@ -467,10 +471,10 @@ public class ContactsActivity extends XmppActivity {
 	 * Sends invitation to the selected Contact
 	 * 
 	 * */
-	public void inviteToGroupFromService(Account account, Contact contacts , String SENDERJID
-			) {
-		Utils.tempxmppConnectionService.inviteToConferenceWithAccount(account, contacts,
-				SENDERJID);
+	public void inviteToGroupFromService(Account account, Contact contacts,
+			String SENDERJID) {
+		Utils.tempxmppConnectionService.inviteToConferenceWithAccount(account,
+				contacts, SENDERJID);
 
 		// List<Contact> contactselected = new ArrayList<Contact>();
 		// contactselected.add(contact);

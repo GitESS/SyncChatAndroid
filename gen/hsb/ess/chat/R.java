@@ -334,6 +334,7 @@ public final class R {
         public static final int last_seen_mins=0x7f0500ec;
         public static final int last_seen_now=0x7f0500ea;
         public static final int manage_account=0x7f050062;
+        public static final int message_from_tdk=0x7f0500f4;
         public static final int mgmt_account_account_offline=0x7f0500c4;
         public static final int mgmt_account_are_you_sure=0x7f0500c2;
         public static final int mgmt_account_delete=0x7f0500bf;

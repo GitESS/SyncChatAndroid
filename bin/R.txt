@@ -311,6 +311,7 @@ int string last_seen_min 0x7f0500eb
 int string last_seen_mins 0x7f0500ec
 int string last_seen_now 0x7f0500ea
 int string manage_account 0x7f050062
+int string message_from_tdk 0x7f0500f4
 int string mgmt_account_account_offline 0x7f0500c4
 int string mgmt_account_are_you_sure 0x7f0500c2
 int string mgmt_account_delete 0x7f0500bf
